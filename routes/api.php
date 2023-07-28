@@ -4,6 +4,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\Location\CityController as LocationCityController;
 use App\Http\Controllers\Location\MunicipalityController as LocationMunicipalityController;
 use App\Http\Controllers\MunicipalityController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\SectorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/city/{city}/municipalities', [LocationMunicipalityController::class, "show"]);
     // Sectores
     Route::get('/sectors', [SectorController::class, "index"]);
+    // Organizaciones
+    Route::apiResource('/organizations', OrganizationController::class);
     // Rutas protegidas
     Route::middleware('auth:sanctum')->group(function () {
         //

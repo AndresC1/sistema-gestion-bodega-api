@@ -18,4 +18,9 @@ class Municipality extends Model
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+
+    public function organizations()
+    {
+        return $this->hasMany(Organization::class, 'municipality_id');
+    }
 }
