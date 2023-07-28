@@ -19,4 +19,9 @@ class City extends Model
     {
         return $this->hasMany(Municipality::class, 'city_id');
     }
+
+    public function organizations()
+    {
+        return $this->hasMany(Organization::class, 'city_id');
+    }
 }
