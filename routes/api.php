@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/city/{city}/municipalities', [LocationMunicipalityController::class, "show"]);
     // Sectores
     Route::get('/sectors', [SectorController::class, "index"]);
+    Route::get('/sector/{sector}/organizations', [SectorController::class, "organization_for_sector"]);
     // Organizaciones
     Route::apiResource('/organizations', OrganizationController::class);
     // Rutas protegidas
