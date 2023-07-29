@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     // Autenticación
-    Route::post('/auth/login', [AuthController::class, "login"]);
+    Route::post('/auth/login', [AuthController::class, "login"])->middleware('check_status_user');
     Route::post('/auth/register', [AuthController::class, "register"]);
     // Ciudades y departamentos
     Route::get('/cities', [LocationCityController::class, "index"]);
@@ -27,5 +27,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, "logout"]);
         Route::get('/user/info', [UserController::class, "show"]);
+        // Estados de los usuarios
+        Route::get('/user/{user}/change_status', [UserController::class, "change_status"]);
     });
 });
