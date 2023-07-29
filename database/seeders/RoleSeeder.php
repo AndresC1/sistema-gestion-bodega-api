@@ -16,8 +16,18 @@ class RoleSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('roles')->truncate();
         DB::table('roles')->insert([
-            'name' => 'admin',
-            'description' => 'Rol de administrador',
+            [
+                'name' => 'super_admin',
+                'description' => 'Rol con el máximo nivel de permisos con el poder de realizar cualquier acción en el sistema',
+            ],
+            [
+                'name' => 'admin',
+                'description' => 'Rol con permisos de administrador para una organización',
+            ],
+            [
+                'name' => 'guest',
+                'description' => 'Rol con muchas restricciones',
+            ]
         ]);
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
