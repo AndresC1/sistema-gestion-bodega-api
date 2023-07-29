@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Organization;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,6 +21,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             SectorSeeder::class,
             OrganizationSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }
