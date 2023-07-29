@@ -7,6 +7,7 @@ use App\Http\Controllers\Location\MunicipalityController as LocationMunicipality
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\SectorController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,5 +26,6 @@ Route::prefix('v1')->group(function () {
     // Rutas protegidas
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, "logout"]);
+        Route::get('/user/info', [UserController::class, "show"]);
     });
 });
