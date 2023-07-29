@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('username', 50)->unique();
             $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('organization_id')->nullable();
+            $table->foreign('organization_id')->references('id')->on('organizations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->dateTime('last_login_at');
             $table->enum('status', ['active', 'inactive'])->default('active');
         });
@@ -26,13 +27,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
-                'username',
-                'role_id',
-                'organization_id',
-                'last_login_at',
-                'status',
-            ]);
+            $table->dropForeign(['role_id']);
+            $table->dropForeign(['organization_id']);
+            $table->dropIfExists('username');
+            $table->dropIfExists('role_id');
+            $table->dropIfExists('organization_id');
+            $table->dropIfExists('last_login_at');
+            $table->dropIfExists('status');
         });
     }
 };
