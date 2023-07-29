@@ -17,12 +17,19 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $count_roles = \App\Models\Role::count();
+        $count_organizations = \App\Models\Organization::count();
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
+            'username' => fake()->unique()->userName(),
+            'role_id' => fake()->numberBetween(1, $count_roles),
+            'organization_id' => fake()->numberBetween(1, $count_organizations),
+            'last_login_at' => fake()->dateTime(),
+            'status' => fake()->randomElement(['active', 'inactive']),
         ];
     }
 
