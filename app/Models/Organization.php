@@ -34,4 +34,9 @@ class Organization extends Model
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'organization_id');
+    }
 }
