@@ -11,6 +11,25 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function index(){
+        try{
+            $users = User::all();
+            $users_list = $users->filter(function ($user) {
+                return $user->id !== auth()->user()->id && $user->role->name !== "super_admin";
+            });
+            return response()->json([
+                'usuarios' => UserInfoResource::collection($users_list),
+                'mensaje' => 'Usuarios obtenidos correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener los usuarios',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
     public function show()
     {
         try{
