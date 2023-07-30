@@ -33,5 +33,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/user/{user}/change_status', [UserController::class, "change_status"]);
         // Usuarios por organizacion
         Route::get('/organization/{organization}/users', [OrganizationController::class, "users_by_organization"]);
+        // Usuarios
+        Route::get('/users', [UserController::class, "index"]);
     });
 });
