@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // Custom middleware
         'check_status_user' => \App\Http\Middleware\User\check_status_user::class,
+        'blocking_change_role' => \App\Http\Middleware\User\blocking_change_role::class,
     ];
 }

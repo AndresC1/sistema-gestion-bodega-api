@@ -6,6 +6,7 @@ use App\Http\Controllers\Location\CityController as LocationCityController;
 use App\Http\Controllers\Location\MunicipalityController as LocationMunicipalityController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SectorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -42,5 +43,9 @@ Route::prefix('v1')->group(function () {
         // Organizaciones
         Route::apiResource('/organizations', OrganizationController::class);
         Route::get('/organization/{organization}/users', [OrganizationController::class, "users_by_organization"]);
+
+        // Roles
+        Route::get('/roles', [RoleController::class, "index"]);
+        Route::post('/user/change_role', [RoleController::class, "change_role_by_user"])->middleware('blocking_change_role');
     });
 });
