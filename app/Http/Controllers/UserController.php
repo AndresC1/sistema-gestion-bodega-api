@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserInfoResource;
 use App\Models\User;
 use Exception;
@@ -41,6 +42,22 @@ class UserController extends Controller
         } catch(Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al cambiar el estado del usuario',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+    public function update(UpdateUserRequest $request, User $user){
+        try{
+            $user->update($request->validated());
+            return response()->json([
+                'usuario' => UserInfoResource::make($user),
+                'mensaje' => 'El usuario se actualizo correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al actualizar el usuario',
                 'error' => $e->getMessage(),
                 'estado' => 500
             ], 500);
