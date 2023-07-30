@@ -31,5 +31,7 @@ Route::prefix('v1')->group(function () {
         Route::patch('/user/{user}', [UserController::class, "update"]);
         // Estados de los usuarios
         Route::get('/user/{user}/change_status', [UserController::class, "change_status"]);
+        // Usuarios por organizacion
+        Route::get('/organization/{organization}/users', [OrganizationController::class, "users_by_organization"]);
     });
 });

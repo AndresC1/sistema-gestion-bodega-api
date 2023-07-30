@@ -6,6 +6,8 @@ use App\Http\Requests\Organization\StoreOrganizationRequest as StoreOrganization
 use App\Http\Requests\Organization\UpdateOrganizationRequest as UpdateOrganizationRequest;
 use App\Models\Organization;
 use App\Http\Resources\Organization\OrganizationResource;
+use App\Http\Resources\User\UserResource;
+use App\Models\User;
 use Exception;
 
 class OrganizationController extends Controller
@@ -122,6 +124,22 @@ class OrganizationController extends Controller
         }catch(Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al eliminar la organización',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+    public function users_by_organization(Organization $organization){
+        try{
+            $users_by_organization = User::where('organization_id', $organization->id)->get();
+            return response()->json([
+                'usuarios' => UserResource::collection($users_by_organization),
+                'mensaje' => 'Usuarios de organizacion obtenidos correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener los usuarios de la organización',
                 'error' => $e->getMessage(),
                 'estado' => 500
             ], 500);
