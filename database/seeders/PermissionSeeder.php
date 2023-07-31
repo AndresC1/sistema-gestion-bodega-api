@@ -13,6 +13,26 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $list_permission = [
+            ["name" => "view_list_organization", "description" => "Ver lista de las organizaciones del sistema"],
+            ["name" => "add_organization", "description" =>"Creacion de nueva organizacion en el sistema"],
+            ["name" => "update_data_organization", "description" =>"Actualizacion de los datos de las organizaciones"],
+            ["name" => "delete_organization", "description" =>"Eliminacion de organizaciones"],
+            ["name" => "view_organization", "description" =>"Ver datos de una organizacion"],
+            ["name" => "list_user_by_organization", "description" =>"Lista de usuarios que pertenecen a una organizacion"],
+            ["name" => "view_list_sector", "description" =>"Ver lista de sectores"],
+            ["name" => "view_list_organization_by_sector", "description" =>"Ver lista de organizaciones por sector"],
+            ["name" => "add_user", "description" =>"Creacion de nuevos usuarios al sistema"],
+            ["name" => "change_status_by_user", "description" =>"Cambio de estado por usuarios"],
+            ["name" => "update_data_user", "description" =>"Actualizacion de datos de usuario"],
+            ["name" => "view_list_user", "description" =>"Ver lista de usuarios del sistema"],
+            ["name" => "view_list_roles", "description" =>"Ver lista de roles"],
+            ["name" => "change_role_by_user", "description" =>"Cambio de rol a usuario"],
+            // ["name" => "", "description" =>""],
+        ];
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('permissions')->truncate();
+        DB::table('permissions')->insert($list_permission);
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
