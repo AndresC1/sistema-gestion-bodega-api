@@ -22,7 +22,7 @@ class RoleInfoResource extends JsonResource
             'name' => $this->name,
             'description'=> $this->description,
             'permissions' => $this->role_permission->map(function (RolePermission $role_permission) {
-                return PermissionResource::make(Permission::find($role_permission->id));
+                return PermissionResource::make(Permission::find($role_permission->permission_id));
             })
         ];
     }
