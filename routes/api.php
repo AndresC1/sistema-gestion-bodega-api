@@ -41,7 +41,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/sector/{sector}/organizations', [SectorController::class, "organization_for_sector"]);
 
         // Organizaciones
-        Route::apiResource('/organizations', OrganizationController::class);
+        Route::apiResource('/organizations', OrganizationController::class)->except(['index']);
+        Route::get('/organizations', [OrganizationController::class, "index"])->middleware('view_list_organization');
         Route::get('/organization/{organization}/users', [OrganizationController::class, "users_by_organization"]);
 
         // Roles
