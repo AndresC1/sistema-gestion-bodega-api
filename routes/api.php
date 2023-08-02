@@ -24,9 +24,7 @@ Route::prefix('v1')->group(function () {
             // Informacion de usuario
         Route::get('/user/info', [UserController::class, "show"]);
         // Actualizacion de datos para usuario
-        Route::middleware('check_permission:update_data_user')->group(function () {
-            Route::patch('/user/{user}', [UserController::class, "update"]);
-        });
+        Route::patch('/user', [UserController::class, "update"]);
             // Cambio de estado para usuario
         Route::middleware('check_permission:change_status_by_user')->group(function () {
             Route::get('/user/{user}/change_status', [UserController::class, "change_status"]);
@@ -76,5 +74,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:change_role_by_user', 'blocking_change_role')->group(function () {
             Route::post('/user/change_role', [RoleController::class, "change_role_by_user"]);
         });
+        // Cambio de contraseña
+        Route::post('/user/change_password', [UserController::class, "change_password"]);
     });
 });

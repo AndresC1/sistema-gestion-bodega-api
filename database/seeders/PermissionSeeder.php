@@ -24,7 +24,6 @@ class PermissionSeeder extends Seeder
             ["name" => "view_list_organization_by_sector", "description" =>"Ver lista de organizaciones por sector"],
             ["name" => "add_user", "description" =>"Creacion de nuevos usuarios al sistema"],
             ["name" => "change_status_by_user", "description" =>"Cambio de estado por usuarios"],
-            ["name" => "update_data_user", "description" =>"Actualizacion de datos de usuario"],
             ["name" => "view_list_user", "description" =>"Ver lista de usuarios del sistema"],
             ["name" => "view_list_roles", "description" =>"Ver lista de roles"],
             ["name" => "change_role_by_user", "description" =>"Cambio de rol a usuario"],

@@ -15,13 +15,13 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        if(!DB::table('users')->where('username', 'SGB_Admin')->first()){
+        if(!DB::table('users')->where('username', getenv('TEST_USERNAME'))->first()){
             DB::table('users')->insert([
-                'name' => 'Super Admin',
-                'username' => 'SGB_Admin',
-                'email' => null,
-                'password' => Hash::make('SistemaBodega2023'),
-                'role_id' => 1,
+                'name' => getenv('TEST_NAME'),
+                'username' => getenv('TEST_USERNAME'),
+                'email' => getenv('TEST_EMAIL'),
+                'password' => Hash::make(getenv('TEST_PASSWORD')),
+                'role_id' => getenv('TEST_ROLE_ID'),
                 'organization_id' => null,
                 'last_login_at' => now(),
                 'status' => 'active',

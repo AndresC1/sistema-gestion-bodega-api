@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\User;
 
+use App\Rules\MatchOldEmail;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserRequest extends FormRequest
@@ -22,9 +23,15 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => "string|max:255",
-            'email' => "email|unique:users,email",
-            'password' => "string|min:8|confirmed|max:32",
+            'name' => [
+                'string', 
+                'max:255',
+            ],
+            'email' => [
+                'email', 
+                new MatchOldEmail,
+                'unique:users,email',
+            ],
         ];
     }
 
@@ -38,10 +45,6 @@ class UpdateUserRequest extends FormRequest
             'name.max' => 'El nombre no debe ser mayor a 255 caracteres',
             'email.email' => 'El correo electrónico debe ser una dirección de correo electrónico válida',
             'email.unique' => 'El correo electrónico ya está en uso',
-            'password.string' => 'La contraseña debe ser una cadena de caracteres',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
-            'password.confirmed' => 'La confirmación de la contraseña no coincide',
-            'password.max' => 'La contraseña no debe ser mayor a 32 caracteres',
         ];
     }
 }
