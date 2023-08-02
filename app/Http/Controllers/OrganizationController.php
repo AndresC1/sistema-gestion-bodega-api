@@ -9,6 +9,7 @@ use App\Http\Resources\Organization\OrganizationResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class OrganizationController extends Controller
 {
@@ -140,6 +141,22 @@ class OrganizationController extends Controller
         } catch(Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al obtener los usuarios de la organización',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+    public function see_organization(){
+        try{
+            $organization = Organization::where('id', Auth::user()->organization_id)->first();
+            return response()->json([
+                'organizacion' => new OrganizationResource($organization),
+                'mensaje' => 'Organización obtenida correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener la organización',
                 'error' => $e->getMessage(),
                 'estado' => 500
             ], 500);

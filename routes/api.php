@@ -49,6 +49,9 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:view_organization')->group(function () {
             Route::get('/organization/{organization}', [OrganizationController::class, "show"]);
         });
+        Route::middleware('check_permission:see_my_organization')->group(function () {
+            Route::get('/organization_info', [OrganizationController::class, "see_organization"]);
+        });
         Route::middleware('check_permission:add_organization')->group(function () {
             Route::post('/organization', [OrganizationController::class, "store"]);
         });
