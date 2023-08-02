@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\ChangePasswordUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserInfoResource;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -66,9 +68,14 @@ class UserController extends Controller
             ], 500);
         }
     }
-    public function update(UpdateUserRequest $request, User $user){
+    public function update(UpdateUserRequest $request){
         try{
-            $user->update($request->validated());
+            $request->validated();
+            $user = Auth::user();
+            $user->update([
+                'name' => $request->name??$user->name,
+                'email' => $request->email??$user->email,
+            ]);
             return response()->json([
                 'usuario' => UserInfoResource::make($user),
                 'mensaje' => 'El usuario se actualizo correctamente',
@@ -77,6 +84,25 @@ class UserController extends Controller
         } catch(Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al actualizar el usuario',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+    public function change_password(ChangePasswordUserRequest $request){
+        try{
+            $request->validated();
+            Auth::user()->update([
+                'password' => Hash::make($request->password)
+            ]);;
+            Auth::user()->tokens()->delete();
+            return response()->json([
+                'mensaje' => 'Contraseña cambiada correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al cambiar la contraseña',
                 'error' => $e->getMessage(),
                 'estado' => 500
             ], 500);
