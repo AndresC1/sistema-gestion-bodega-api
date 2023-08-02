@@ -67,6 +67,6 @@ class Kernel extends HttpKernel
         // Custom middleware
         'check_status_user' => \App\Http\Middleware\User\check_status_user::class,
         'blocking_change_role' => \App\Http\Middleware\User\blocking_change_role::class,
-        'view_list_organization' => \App\Http\Middleware\Permission\Organization\view_list_organization::class,
+        'check_permission' => \App\Http\Middleware\Permission\check_permission::class,
     ];
 }
