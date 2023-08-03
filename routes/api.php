@@ -69,6 +69,9 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:list_user_by_organization')->group(function () {
             Route::get('/organization/{organization}/users', [OrganizationController::class, "users_by_organization"]);
         });
+        Route::middleware('check_permission:list_user_my_organization')->group(function () {
+            Route::get('/organization_users', [OrganizationController::class, "list_user"]);
+        });
 
         // Roles
         Route::middleware('check_permission:view_list_roles')->group(function () {

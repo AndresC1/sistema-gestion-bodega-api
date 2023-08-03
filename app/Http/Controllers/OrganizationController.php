@@ -162,4 +162,22 @@ class OrganizationController extends Controller
             ], 500);
         }
     }
+    public function list_user(){
+        try{
+            $users = Auth::user()->organization->users->filter(function($user){
+                return $user->id != Auth::user()->id;
+            });
+            return response()->json([
+                'usuarios' => UserResource::collection($users),
+                'mensaje' => 'Usuarios obtenidos correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener los usuarios',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
 }
