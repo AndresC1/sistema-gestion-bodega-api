@@ -28,6 +28,7 @@ class PermissionSeeder extends Seeder
             ["name" => "view_list_roles", "description" =>"Ver lista de roles"],
             ["name" => "change_role_by_user", "description" =>"Cambio de rol a usuario"],
             ["name" => "see_my_organization", "description" =>"Ver informacion de la organizacion a la que pertece el usuario"],
+            ["name" => "list_user_my_organization", "description" =>"Lista de usuarios de la organizacion a la que pertene el usuario"],
             // ["name" => "", "description" =>""],
         ];
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
