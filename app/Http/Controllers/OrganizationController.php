@@ -9,7 +9,9 @@ use App\Http\Resources\Organization\OrganizationResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class OrganizationController extends Controller
 {
@@ -96,7 +98,17 @@ class OrganizationController extends Controller
     public function update(UpdateOrganizationRequest $request, Organization $organization)
     {
         try{
-            $organization->update($request->validated());
+            $request->validated();
+            $organization->update([
+                'name' => $request['name']??$organization->name,
+                'ruc' => $request['ruc']??$organization->ruc,
+                'address' => $request['address']??$organization->address,
+                'sector_id' => $request['sector_id']??$organization->sector_id,
+                'municipality_id' => $request['municipality_id']??$organization->municipality_id,
+                'city_id' => $request['city_id']??$organization->city_id,
+                'phone_main' => $request['phone_main']??$organization->phone_main,
+                'phone_secondary' => $request['phone_secondary']??$organization->phone_secondary,
+            ]);
             return response()->json([
                 'organizacion' => new OrganizationResource($organization),
                 'mensaje' => 'Organización actualizada correctamente',
@@ -175,6 +187,50 @@ class OrganizationController extends Controller
         } catch(Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al obtener los usuarios',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+
+    public function update_my_organization(Request $request){
+        try{
+            $organization = Organization::find(Auth::user()->organization_id);
+            $validacion = new UpdateOrganizationRequest($organization);
+            $request->validate($validacion->rules(), $validacion->messages());
+            $organization->update([
+                'name' => $request->name??$organization->name,
+                'ruc' => $request->ruc??$organization->ruc,
+                'address' => $request->address??$organization->address,
+                'sector_id' => $request->sector_id??$organization->sector_id,
+                'municipality_id' => $request->municipality_id??$organization->municipality_id,
+                'city_id' => $request->city_id??$organization->city_id,
+                'phone_main' => $request->phone_main??$organization->phone_main,
+                'phone_secondary' => $request->phone_secondary??$organization->phone_secondary,
+            ]);
+            return response()->json([
+                'organizacion' => new OrganizationResource($organization),
+                'mensaje' => 'Organización obtenida correctamente',
+                'estado' => 200
+            ], 200);
+            $organization->update([
+                'name' => $request->name??$organization->name,
+                'ruc' => $request->ruc??$organization->ruc,
+                'address' => $request->address??$organization->address,
+                'sector_id' => $request->sector_id??$organization->sector_id,
+                'municipality_id' => $request->municipality_id??$organization->municipality_id,
+                'city_id' => $request->city_id??$organization->city_id,
+                'phone_main' => $request->phone_main??$organization->phone_main,
+                'phone_secondary' => $request->phone_secondary??$organization->phone_secondary,
+            ]);
+            return response()->json([
+                'organizacion' => new OrganizationResource($organization),
+                'mensaje' => 'Organización obtenida correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al actualizar la organización',
                 'error' => $e->getMessage(),
                 'estado' => 500
             ], 500);

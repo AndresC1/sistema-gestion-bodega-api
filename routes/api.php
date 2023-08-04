@@ -55,13 +55,16 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:add_organization')->group(function () {
             Route::post('/organization', [OrganizationController::class, "store"]);
         });
-        Route::middleware('check_permission:update_data_organization')->group(function () {
-            Route::match(['put', 'patch'], '/organization/{organization}', [OrganizationController::class, "update"]);
-            // Ciudades y departamentos
-                // Lista de Ciudades
+        // Ciudades y departamentos
+            // Lista de Ciudades
             Route::get('/cities', [LocationCityController::class, "index"]);
-                // Lista de Municipios por ciudad
+            // Lista de Municipios por ciudad
             Route::get('/city/{city}/municipalities', [LocationMunicipalityController::class, "show"]);
+        Route::middleware('check_permission:update_data_organization')->group(function () {
+            Route::patch('/organization/{organization}', [OrganizationController::class, "update"]);
+        });
+        Route::middleware('check_permission:update_my_organization')->group(function () {
+            Route::patch('/organization_update', [OrganizationController::class, "update_my_organization"]);
         });
         Route::middleware('check_permission:delete_organization')->group(function () {
             Route::delete('/organization/{organization}', [OrganizationController::class, "destroy"]);
