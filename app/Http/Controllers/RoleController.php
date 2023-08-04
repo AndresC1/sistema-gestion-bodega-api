@@ -32,6 +32,7 @@ class RoleController extends Controller
         try{
             $user = User::find($request->user_id);
             $user->role_id = $request->role_id;
+            $user->save();
             return response()->json([
                 'user' => UserInfoResource::make($user),
                 'mensaje' => 'Rol cambiado correctamente',
