@@ -26,8 +26,8 @@ Route::prefix('v1')->group(function () {
         // Actualizacion de datos para usuario
         Route::patch('/user', [UserController::class, "update"]);
             // Cambio de estado para usuario
-        Route::middleware('check_permission:change_status_by_user')->group(function () {
-            Route::get('/user/{user}/change_status', [UserController::class, "change_status"]);
+        Route::middleware('check_permission:change_status_by_user', 'check_role_super_admin', 'match_organization', 'check_different_role')->group(function () {
+            Route::patch('/user/{user}/change_status', [UserController::class, "change_status"]);
         });
             // Lista de usuarios del sistema
         Route::middleware('check_permission:view_list_user')->group(function () {

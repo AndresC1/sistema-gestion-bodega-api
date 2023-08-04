@@ -3,6 +3,7 @@
 namespace Tests\Feature\Organization;
 
 use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -49,7 +50,8 @@ class UpdateDataOfMyOrganizationTest extends TestCase
     }
 
     public function test_both_data_match(){
-        $dataOrganization = Organization::find(1)->get();
+        $data_old_user = User::where('username', getenv('TEST_USERNAME_ADMIN'))->first();
+        $data_old_organization = $data_old_user->organization;
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
@@ -58,9 +60,15 @@ class UpdateDataOfMyOrganizationTest extends TestCase
             ]),
         ])->json('PATCH', '/api/v1/organization_update', [
             'address' => $this->dataOrganization['address'],
-            'sector_id' => $dataOrganization[0]->sector_id,
-            'municipality_id' => $dataOrganization[0]->municipality_id,
+            'sector_id' => $data_old_organization->sector_id,
+            'municipality_id' => $data_old_organization->municipality_id,
         ]);
+        $data_new_user = User::where('username', getenv('TEST_USERNAME_ADMIN'))->first();
+        $data_new_organization = $data_new_user->organization;
+
+        $this->assertEquals($data_old_organization->address, $data_new_organization->address);
+        $this->assertEquals($data_old_organization->sector_id, $data_new_organization->sector_id);
+        $this->assertEquals($data_old_organization->municipality_id, $data_new_organization->municipality_id);
         $response->assertStatus(500);
     }
 }

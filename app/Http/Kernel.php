@@ -68,5 +68,8 @@ class Kernel extends HttpKernel
         'check_status_user' => \App\Http\Middleware\User\check_status_user::class,
         'blocking_change_role' => \App\Http\Middleware\User\blocking_change_role::class,
         'check_permission' => \App\Http\Middleware\Permission\check_permission::class,
+        'match_organization' => \App\Http\Middleware\Permission\Organization\match_organization::class,
+        'check_role_super_admin' => \App\Http\Middleware\Permission\check_role_super_admin::class,
+        'check_different_role' => \App\Http\Middleware\Permission\check_both_user_have_different_roles::class,
     ];
 }
