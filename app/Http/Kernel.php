@@ -71,5 +71,8 @@ class Kernel extends HttpKernel
         'match_organization' => \App\Http\Middleware\Permission\Organization\match_organization::class,
         'check_role_super_admin' => \App\Http\Middleware\Permission\check_role_super_admin::class,
         'check_different_role' => \App\Http\Middleware\Permission\check_both_user_have_different_roles::class,
+        'check_both_super_admin' => \App\Http\Middleware\Permission\Change_rol\check_super_admin_change_another_super_admin::class,
+        'check_admin_change_user_super_admin' => \App\Http\Middleware\Permission\Change_rol\check_admin_change_user_super_admin::class,
+        'check_different_organization' =>  \App\Http\Middleware\Permission\Change_rol\check_different_organization::class,
     ];
 }
