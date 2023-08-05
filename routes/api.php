@@ -55,11 +55,12 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:add_organization')->group(function () {
             Route::post('/organization', [OrganizationController::class, "store"]);
         });
-        // Ciudades y departamentos
+        Route::middleware('check_permission:view_list_cities_and_municipalities')->group(function () {
             // Lista de Ciudades
             Route::get('/cities', [LocationCityController::class, "index"]);
             // Lista de Municipios por ciudad
             Route::get('/city/{city}/municipalities', [LocationMunicipalityController::class, "show"]);
+        });
         Route::middleware('check_permission:update_data_organization')->group(function () {
             Route::patch('/organization/{organization}', [OrganizationController::class, "update"]);
         });
