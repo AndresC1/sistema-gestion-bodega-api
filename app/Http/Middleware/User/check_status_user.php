@@ -17,9 +17,9 @@ class check_status_user
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->username == null){
+        if(User::where('username', $request->username)->first() == null){
             return response()->json([
-                'mensaje' => 'username es requerido',
+                'mensaje' => 'username es incorrecto',
                 'estado' => 404
             ], 404);
         }
