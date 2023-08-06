@@ -27,6 +27,7 @@ class ChangePasswordTest extends TestCase
         ]);
         $user = User::where('username', getenv('TEST_USERNAME'))->first();
         $this->assertTrue(Hash::check($this->new_password, $user->password));
+        $this->assertEquals(1, $user->verification_password);
         $response->assertStatus(200);
     }
 

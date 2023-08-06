@@ -18,25 +18,25 @@ class AuthController extends Controller
         $validation = new StoreUserRequest();
         $request->validate($validation->rules(), $validation->messages());
 
+        $password_generated = $this->generatePassword();
         $user = new User([
             'name' => $request->name,
             'email' => $request->email ?? null,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($password_generated),
             'role_id' => $request->role_id,
             'organization_id' => $request->organization_id,
             'username' => $request->username,
             'last_login_at' => now(),
             'status' => 'active',
+            'verification_password' => 0
         ]);
 
         $user->save();
 
-        $tokenUser = $user->createToken('Personal Access Token')->plainTextToken;
-
         return response()->json([
             'usuario' => UserInfoResource::make($user),
-            'token' => $tokenUser,
-            'token_type' => 'Bearer',
+            'password' => $password_generated,
+            'verificacion_password' => $user->verification_password,
             'mensaje' => 'Usuario creado exitosamente!',
             'estado' => 201
         ], 201);
@@ -79,5 +79,11 @@ class AuthController extends Controller
             'mensaje' => 'Logout exitoso',
             'estado' => 200
         ], 200);
+    }
+
+    private function generatePassword(){
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*#@$%&_";
+        $password = substr(str_shuffle($chars), 0, 20);
+        return $password;
     }
 }
