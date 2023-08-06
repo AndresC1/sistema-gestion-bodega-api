@@ -17,6 +17,12 @@ class check_status_user
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if($request->username == null){
+            return response()->json([
+                'mensaje' => 'username es requerido',
+                'estado' => 404
+            ], 404);
+        }
         if(User::where('username', $request->username)->first()->status == 'inactive'){
             return response()->json([
                 'mensaje' => 'Usuario inactivo',
