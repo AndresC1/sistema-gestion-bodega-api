@@ -26,6 +26,7 @@ class User extends Authenticatable
         'organization_id',
         'last_login_at',
         'status',
+        'verification_password',
     ];
 
     /**

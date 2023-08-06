@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\User;
 
+use App\Rules\User\MatchOrganization;
+use App\Rules\User\VerificationRolePermitted;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
@@ -22,12 +24,31 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'email' => 'email|unique:users',
-            'password' => 'required|string|min:8|max:32',
-            'username' => 'required|string|unique:users',
-            'role_id' => 'required|integer|exists:roles,id',
-            'organization_id' => 'required|integer|exists:organizations,id',
+            'name' => [
+                'required', 
+                'string'
+            ],
+            'email' => [
+                'email', 
+                'unique:users'
+            ],
+            'username' => [
+                'required', 
+                'string', 
+                'unique:users'
+            ],
+            'role_id' => [
+                'required', 
+                'integer', 
+                'exists:roles,id',
+                new VerificationRolePermitted(),
+            ],
+            'organization_id' => [
+                'required', 
+                'integer', 
+                'exists:organizations,id',
+                new MatchOrganization(),
+            ],
         ];
     }
 

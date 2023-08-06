@@ -93,7 +93,8 @@ class UserController extends Controller
         try{
             $request->validated();
             Auth::user()->update([
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'verification_password' => 1,
             ]);;
             Auth::user()->tokens()->delete();
             return response()->json([
