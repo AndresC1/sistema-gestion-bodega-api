@@ -18,7 +18,7 @@
 composer install
 ```
 
-3. Copiar archivo **.env.exmaple** y pegarlo en la raiz del proyecto con el nombre **.env**.
+3. Copiar archivo **.env.example** y pegarlo en la raiz del proyecto con el nombre **.env**.
 
 4. Generar clave de cifrado.
 ```bash
