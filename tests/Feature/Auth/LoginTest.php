@@ -22,4 +22,24 @@ class LoginTest extends TestCase
         ]);
         $response->assertStatus(201);
     }
+
+    public function test_login_without_username(): void
+    {
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+        ])->json('POST', '/api/v1/auth/login', [
+            'password' => getenv('TEST_PASSWORD'),
+        ]);
+        $response->assertStatus(404);
+    }
+
+    public function test_login_without_password(): void
+    {
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+        ])->json('POST', '/api/v1/auth/login', [
+            'username' => getenv('TEST_USERNAME'),
+        ]);
+        $response->assertStatus(422);
+    }
 }
