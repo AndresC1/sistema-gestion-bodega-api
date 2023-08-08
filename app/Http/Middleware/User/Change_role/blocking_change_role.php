@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware\User;
+namespace App\Http\Middleware\User\Change_role;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -8,11 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class blocking_change_role
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if($request->role_id == 1){
