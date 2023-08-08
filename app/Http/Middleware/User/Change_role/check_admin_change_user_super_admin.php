@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware\Permission\Change_rol;
+namespace App\Http\Middleware\User\Change_role;
 
 use App\Models\User;
 use Closure;
@@ -10,11 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class check_admin_change_user_super_admin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::user()->role_id == 2 && User::find($request->user_id)->role_id == 1){
