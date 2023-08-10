@@ -17,7 +17,7 @@ class UpdateDataOfMyOrganizationTest extends TestCase
         'name' => 'New name of organization',
         'ruc' => '12345678901F',
         'address' => 'address of organization',
-        'sector_id' => 1,
+        'sector_id' => 2,
         'municipality_id' => 30,
         'city_id' => 4,
         'phone_main' => '123456789',

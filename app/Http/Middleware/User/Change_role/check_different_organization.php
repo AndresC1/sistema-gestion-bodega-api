@@ -15,7 +15,7 @@ class check_different_organization
         if(Auth::user()->role_id == 1){
             return $next($request);
         }
-        if(Auth::user()->organization_id != User::find($request->user_id)->first()->organization_id){
+        if(Auth::user()->organization_id != User::find($request->user_id)->organization_id){
             return response()->json([
                 'message' => 'No puedes cambiar el rol de un usuario de otra organizacion',
             ], 403);

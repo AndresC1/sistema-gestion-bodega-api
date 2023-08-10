@@ -19,7 +19,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:add_user')->group(function () {
             Route::post('/auth/register', [AuthController::class, "register"]);
         });
-        
+
         // Usuarios
             // Informacion de usuario
         Route::get('/user/info', [UserController::class, "show"]);
@@ -81,7 +81,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:view_list_roles')->group(function () {
             Route::get('/roles', [RoleController::class, "index"]);
         });
-        Route::middleware('check_permission:change_role_by_user', 'blocking_change_role', 'check_both_super_admin', 'check_admin_change_user_super_admin', 'check_different_organization')->group(function () {
+        Route::middleware('check_permission:change_role_by_user', 'blocking_change_role', 'check_both_super_admin', 'check_admin_change_user_super_admin', 'check_different_organization', 'check_both_admin')->group(function () {
             Route::post('/user/change_role', [RoleController::class, "change_role_by_user"]);
         });
         // Cambio de contraseña
