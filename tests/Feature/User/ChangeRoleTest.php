@@ -14,6 +14,7 @@ class ChangeRoleTest extends TestCase
 
     protected $id_user_super_admin = 2;
     protected $id_user_admin = 3;
+    protected $id_user_different_organization = 6;
     protected $id_user_guest = 4;
 
     public function test_user_role_super_admin_create_user_super_admin(): void
@@ -75,6 +76,21 @@ class ChangeRoleTest extends TestCase
                 'username' => getenv('TEST_USERNAME_ADMIN'),
                 'password' => getenv('TEST_PASSWORD_ADMIN'),
             ]),
+        ])->json('POST', '/api/v1/user/change_role', [
+            'user_id' => $this->id_user_different_organization,
+            'role_id' => 3,
+        ]);
+        $user = User::find($this->id_user_admin);
+        $response->assertStatus(403);
+        $this->assertNotEquals(3, $user->role_id);
+    }
+    public function test_admin_change_another_admin(){
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$this->getTokenUser([
+                    'username' => getenv('TEST_USERNAME_ADMIN'),
+                    'password' => getenv('TEST_PASSWORD_ADMIN'),
+                ]),
         ])->json('POST', '/api/v1/user/change_role', [
             'user_id' => $this->id_user_admin,
             'role_id' => 3,

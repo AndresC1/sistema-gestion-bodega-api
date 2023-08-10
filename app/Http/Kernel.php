@@ -74,5 +74,6 @@ class Kernel extends HttpKernel
         'check_both_super_admin' => \App\Http\Middleware\User\Change_role\check_super_admin_change_another_super_admin::class,
         'check_admin_change_user_super_admin' => \App\Http\Middleware\User\Change_role\check_admin_change_user_super_admin::class,
         'check_different_organization' =>  \App\Http\Middleware\User\Change_role\check_different_organization::class,
+        'check_both_admin' =>  \App\Http\Middleware\User\Change_role\check_admin_change_another_admin::class,
     ];
 }
