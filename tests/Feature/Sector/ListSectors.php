@@ -22,4 +22,16 @@ class ListSectors extends TestCase
 
         $response->assertStatus(200);
     }
+    public function test_user_role_super_admin(): void
+    {
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$this->getTokenUser([
+                    'username' => getenv('TEST_USERNAME'),
+                    'password' => getenv('TEST_PASSWORD'),
+                ]),
+        ])->json('GET', '/api/v1/sectors');
+
+        $response->assertStatus(200);
+    }
 }
