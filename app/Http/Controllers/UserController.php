@@ -17,7 +17,7 @@ class UserController extends Controller
         try{
             $users = User::all();
             $users_list = $users->filter(function ($user) {
-                return $user->id !== auth()->user()->id && $user->role->name !== "super_admin";
+                return $user->id !== auth()->user()->id;
             });
             return response()->json([
                 'usuarios' => UserInfoResource::collection($users_list),
