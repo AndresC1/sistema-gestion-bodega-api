@@ -15,6 +15,9 @@ class check_role_super_admin
             return $next($request);
         }
         if($request->route('user')->role_id == 1){
+            if($request->route('user')->status == "inactive" && Auth::user()->role_id == 1){
+                return $next($request);
+            }
             return response()->json([
                 'message' => 'No tienes permitido cambiar los datos de un super administrador',
                 'estado' => 403
