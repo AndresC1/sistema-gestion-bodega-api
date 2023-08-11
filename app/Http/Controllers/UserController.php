@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\ChangePasswordUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\User\UserCleanResource;
 use App\Http\Resources\User\UserInfoResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -77,7 +79,7 @@ class UserController extends Controller
                 'email' => $request->email??$user->email,
             ]);
             return response()->json([
-                'usuario' => UserInfoResource::make($user),
+                'usuario' => UserCleanResource::make($user),
                 'mensaje' => 'El usuario se actualizo correctamente',
                 'estado' => 200
             ], 200);
