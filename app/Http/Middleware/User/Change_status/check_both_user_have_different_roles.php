@@ -15,6 +15,9 @@ class check_both_user_have_different_roles
             return $next($request);
         }
         if($request->route('user')->role_id == Auth::user()->role_id){
+            if($request->route('user')->status == "inactive"){
+                return $next($request);
+            }
             return response()->json([
                 'message' => 'No puedes cambiar los datos de un usuario con el mismo rol que tú',
                 'estado' => 403

@@ -141,4 +141,21 @@ class ChangeStatusTest extends TestCase
         $response->assertStatus(200);
         $this->assertNotEquals($old_status, $this->ValidationChangeStatus(4));
     }
+    public function test_super_admin_account_active_another_super_admin(){
+        $user = User::find($this->user_id_super_admin);
+        if($user->status == 'active'){
+            $user->status = 'inactive';
+            $user->save();
+        }
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$this->getTokenUser([
+                    'username' => getenv('TEST_USERNAME'),
+                    'password' => getenv('TEST_PASSWORD'),
+                ]),
+        ])->json('PATCH', '/api/v1/user/'.$this->user_id_super_admin.'/change_status');
+
+        $response->assertStatus(200);
+        $this->assertEquals('active', $this->ValidationChangeStatus($this->user_id_super_admin));
+    }
 }
