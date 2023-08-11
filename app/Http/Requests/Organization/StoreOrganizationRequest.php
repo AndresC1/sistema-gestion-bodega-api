@@ -25,10 +25,10 @@ class StoreOrganizationRequest extends FormRequest
             "name" => "required|string|unique:organizations,name",
             "ruc" => "required|string|unique:organizations,ruc|max:14",
             "address" => "nullable|string",
-            "sector_id" => "nullable|integer|exists:sectors,id",
-            "municipality_id" => "nullable|integer|exists:municipalities,id",
-            "city_id" => "nullable|integer|exists:cities,id",
-            "phone_main" => "nullable|string",
+            "sector_id" => "required|integer|exists:sectors,id",
+            "municipality_id" => "required|integer|exists:municipalities,id",
+            "city_id" => "required|integer|exists:cities,id",
+            "phone_main" => "required|string",
             "phone_secondary" => "nullable|string",
         ];
     }
@@ -55,6 +55,10 @@ class StoreOrganizationRequest extends FormRequest
             "city_id.exists" => "La ciudad de la organización debe existir en la base de datos",
             "phone_main.string" => "El teléfono principal de la organización debe ser una cadena de caracteres",
             "phone_secondary.string" => "El teléfono secundario de la organización debe ser una cadena de caracteres",
+            "sector_id.required" => "El sector de la organización es requerido",
+            "municipality_id.required" => "El municipio de la organización es requerido",
+            "city_id.required" => "La ciudad de la organización es requerida",
+            "phone_main.required" => "El teléfono principal de la organización es requerido",
         ];
     }
 }
