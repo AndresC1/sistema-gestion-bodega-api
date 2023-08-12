@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Organization\StoreOrganizationRequest as StoreOrganizationRequest;
 use App\Http\Requests\Organization\UpdateOrganizationRequest as UpdateOrganizationRequest;
+use App\Http\Resources\User\UserCleanResource;
 use App\Models\Organization;
 use App\Http\Resources\Organization\OrganizationResource;
 use App\Http\Resources\User\UserResource;
@@ -144,9 +145,21 @@ class OrganizationController extends Controller
     }
     public function users_by_organization(Organization $organization){
         try{
-            $users_by_organization = User::where('organization_id', $organization->id)->get();
+            $users_by_organization = User::where('organization_id', $organization->id)->paginate(10);
             return response()->json([
-                'usuarios' => UserResource::collection($users_by_organization),
+                'usuarios' => UserCleanResource::collection($users_by_organization),
+                'meta' => [
+                    'total' => $users_by_organization->total(),
+                    'current_page' => $users_by_organization->currentPage(),
+                    'last_page' => $users_by_organization->lastPage(),
+                    'per_page' => $users_by_organization->perPage(),
+                ],
+                'links' => [
+                    'first' => $users_by_organization->url(1),
+                    'last' => $users_by_organization->url($users_by_organization->lastPage()),
+                    'prev' => $users_by_organization->previousPageUrl(),
+                    'next' => $users_by_organization->nextPageUrl(),
+                ],
                 'mensaje' => 'Usuarios de organizacion obtenidos correctamente',
                 'estado' => 200
             ], 200);
@@ -176,11 +189,25 @@ class OrganizationController extends Controller
     }
     public function list_user(){
         try{
-            $users = Auth::user()->organization->users->filter(function($user){
+            $organization_id = Auth::user()->organization_id;
+            $users = User::where('organization_id', $organization_id)->paginate(10);
+            $usersFilter = $users->filter(function($user){
                 return $user->id != Auth::user()->id;
             });
             return response()->json([
-                'usuarios' => UserResource::collection($users),
+                'usuarios' => UserCleanResource::collection($usersFilter),
+                'meta' => [
+                    'total' => $users->total(),
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'per_page' => $users->perPage(),
+                ],
+                'links' => [
+                    'first' => $users->url(1),
+                    'last' => $users->url($users->lastPage()),
+                    'prev' => $users->previousPageUrl(),
+                    'next' => $users->nextPageUrl(),
+                ],
                 'mensaje' => 'Usuarios obtenidos correctamente',
                 'estado' => 200
             ], 200);

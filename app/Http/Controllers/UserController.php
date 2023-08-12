@@ -6,7 +6,6 @@ use App\Http\Requests\User\ChangePasswordUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserCleanResource;
 use App\Http\Resources\User\UserInfoResource;
-use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,12 +16,24 @@ class UserController extends Controller
 {
     public function index(){
         try{
-            $users = User::all();
+            $users = User::paginate(10);
             $users_list = $users->filter(function ($user) {
                 return $user->id !== auth()->user()->id;
             });
             return response()->json([
-                'usuarios' => UserInfoResource::collection($users_list),
+                'usuarios' => UserCleanResource::collection($users_list),
+                'meta' => [
+                    'total' => $users->total(),
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'per_page' => $users->perPage(),
+                ],
+                'links' => [
+                    'first' => $users->url(1),
+                    'last' => $users->url($users->lastPage()),
+                    'prev' => $users->previousPageUrl(),
+                    'next' => $users->nextPageUrl(),
+                ],
                 'mensaje' => 'Usuarios obtenidos correctamente',
                 'estado' => 200
             ], 200);
