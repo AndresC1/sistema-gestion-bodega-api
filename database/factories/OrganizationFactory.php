@@ -27,7 +27,7 @@ class OrganizationFactory extends Factory
         $municipality = Municipality::find($this->faker->numberBetween($list_municipalities[0]->id, $list_municipalities[count($list_municipalities)-1]->id));
         $letter_random = Random::generate(1, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
         return [
-            "name" => $this->faker->company(),
+            "name" => $this->faker->unique()->company(),
             "ruc" => $this->faker->unique()->numerify("#############").$letter_random,
             "address" => $this->faker->address(),
             "sector_id" => $this->faker->numberBetween(1, $count_sectors),

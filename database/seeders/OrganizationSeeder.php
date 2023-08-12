@@ -16,7 +16,7 @@ class OrganizationSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('organizations')->truncate();
-        OrganizationFactory::new()->count(10)->create();
+        OrganizationFactory::new()->count(100)->create();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
