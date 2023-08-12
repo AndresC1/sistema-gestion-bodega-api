@@ -22,8 +22,21 @@ class OrganizationController extends Controller
     public function index()
     {
         try{
+            $list_organization = Organization::paginate(10);
             return response()->json([
-                'organizaciones' => OrganizationResource::collection(Organization::all()),
+                'organizaciones' => OrganizationResource::collection($list_organization),
+                'meta' => [
+                    'total' => $list_organization->total(),
+                    'current_page' => $list_organization->currentPage(),
+                    'last_page' => $list_organization->lastPage(),
+                    'per_page' => $list_organization->perPage(),
+                ],
+                'links' => [
+                    'first' => $list_organization->url(1),
+                    'last' => $list_organization->url($list_organization->lastPage()),
+                    'prev' => $list_organization->previousPageUrl(),
+                    'next' => $list_organization->nextPageUrl(),
+                ],
                 'mensaje' => 'Organizaciones obtenidas correctamente',
                 'estado' => 200
             ], 200);

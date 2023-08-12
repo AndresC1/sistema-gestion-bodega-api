@@ -29,9 +29,21 @@ class SectorController extends Controller
     }
     public function organization_for_sector(Sector $sector){
         try{
-            $organizations = Organization::where("sector_id", $sector->id)->get();
+            $organizations = Organization::where("sector_id", $sector->id)->paginate(10);
             return response()->json([
                 "organizaciones" => OrganizationResource::collection($organizations),
+                "meta" => [
+                    "total" => $organizations->total(),
+                    "current_page" => $organizations->currentPage(),
+                    "last_page" => $organizations->lastPage(),
+                    "per_page" => $organizations->perPage()
+                ],
+                "links" => [
+                    "first" => $organizations->url(1),
+                    "last" => $organizations->url($organizations->lastPage()),
+                    "prev" => $organizations->previousPageUrl(),
+                    "next" => $organizations->nextPageUrl()
+                ],
                 "mensaje" => "Organizaciones del sector ".$sector->name,
                 "estado" => 200
             ], 200);
