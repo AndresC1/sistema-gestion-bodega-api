@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,7 @@ class UserSeeder extends Seeder
                 'status' => 'active',
             ]);
         }
+        UserFactory::new()->count(500)->create();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

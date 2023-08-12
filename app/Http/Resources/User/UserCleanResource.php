@@ -19,6 +19,7 @@ class UserCleanResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'username' => $this->username,
+            'role' => $this->role->name,
             'verification_password' => $this->verification_password,
             'status' => $this->status,
             'last_login_at' => $this->last_login_at,
