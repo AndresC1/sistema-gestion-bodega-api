@@ -39,4 +39,9 @@ class Organization extends Model
     {
         return $this->hasMany(User::class, 'organization_id');
     }
+
+    public function providers()
+    {
+        return $this->hasMany(Provider::class, 'organization_id');
+    }
 }
