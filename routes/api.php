@@ -7,6 +7,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SectorController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProviderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -86,5 +87,10 @@ Route::prefix('v1')->group(function () {
         });
         // Cambio de contraseña
         Route::post('/user/change_password', [UserController::class, "change_password"]);
+
+        // Proveedores
+        Route::middleware('check_permission:list_providers_my_organization')->group(function () {
+            Route::get('/providers', [ProviderController::class, "index"]);
+        });
     });
 });

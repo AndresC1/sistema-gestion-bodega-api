@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Provider;
 use App\Http\Requests\StoreProviderRequest;
 use App\Http\Requests\UpdateProviderRequest;
+use Exception;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Provider\ProviderCleanResource;
 
 class ProviderController extends Controller
 {
@@ -13,7 +16,34 @@ class ProviderController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $providers = Provider::where('organization_id', Auth::user()->organization->id)->paginate(10);
+            return response()->json([
+                'proveedores' => ProviderCleanResource::collection($providers),
+                'meta' => [
+                    'total' => $providers->total(),
+                    'current_page' => $providers->currentPage(),
+                    'per_page' => $providers->perPage(),
+                    'last_page' => $providers->lastPage(),
+                    'from' => $providers->firstItem(),
+                    'to' => $providers->lastItem()
+                ],
+                'links' => [
+                    'prev_page_url' => $providers->previousPageUrl(),
+                    'next_page_url' => $providers->nextPageUrl(),
+                    'last_page_url' => $providers->url($providers->lastPage()),
+                    'first_page_url' => $providers->url(1)
+                ],
+                'mensaje' => 'Proveedores obtenidos correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener los proveedores',
+                'error' => $e->getMessage(),
+                'estado' => 400
+            ], 400);
+        }
     }
 
     /**
