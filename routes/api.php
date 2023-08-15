@@ -92,5 +92,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:list_providers_my_organization')->group(function () {
             Route::get('/providers', [ProviderController::class, "index"]);
         });
+        Route::middleware('check_permission:view_list_providers_by_organization')->group(function () {
+            Route::get('/organization/{organization}/providers', [ProviderController::class, "list_provider_by_organization"]);
+        });
     });
 });
