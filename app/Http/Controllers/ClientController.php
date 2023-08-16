@@ -166,4 +166,21 @@ class ClientController extends Controller
             ], 500);
         }
     }
+    public function change_status(Client $client){
+        try{
+            $client->status = $client->status==="active"?"inactive":"active";
+            $client->save();
+            return response()->json([
+                'cliente' => new ClientCleanResource($client),
+                'mensaje' => 'Estado del cliente actualizado correctamente',
+                'estado' => 201
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al actualizar el estado del cliente',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
 }

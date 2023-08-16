@@ -122,5 +122,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:update_clients', 'check_different_organization_for_client')->group(function () {
             Route::patch('/client/{client}', [ClientController::class, "update"]);
         });
+        Route::middleware('check_permission:change_status_client', 'check_different_organization_for_client')->group(function () {
+            Route::patch('/client/{client}/change_status', [ClientController::class, "change_status"]);
+        });
     });
 });
