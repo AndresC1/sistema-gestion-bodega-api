@@ -104,5 +104,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:change_status_provider', 'check_different_organization_for_provider')->group(function () {
             Route::patch('/provider/{provider}/change_status', [ProviderController::class, "change_status"]);
         });
+        Route::middleware('check_permission:see_my_providers', 'check_different_organization_for_provider')->group(function () {
+            Route::get('/provider/{provider}', [ProviderController::class, "show"]);
+        });
     });
 });

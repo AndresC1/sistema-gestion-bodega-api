@@ -36,6 +36,7 @@ class PermissionSeeder extends Seeder
             ["name" => "add_providers", "description" =>"Creacion de nuevos proveedores"],
             ["name" => "update_providers", "description" =>"Actualizacion de datos de proveedores"],
             ["name" => "change_status_provider", "description" =>"Cambio de estado por proveedor"],
+            ["name" => "see_my_providers", "description" =>"Ver informacion de proveedores de mi organizacion"],
             // ["name" => "", "description" =>""],
         ];
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

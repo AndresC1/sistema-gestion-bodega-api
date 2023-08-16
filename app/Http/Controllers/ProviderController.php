@@ -96,7 +96,19 @@ class ProviderController extends Controller
      */
     public function show(Provider $provider)
     {
-        //
+        try {
+            return response()->json([
+                'proveedor' => new ProviderCleanResource($provider),
+                'mensaje' => 'Proveedor obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener el proveedor',
+                'error' => $e->getMessage(),
+                'estado' => 400
+            ], 400);
+        }
     }
 
     /**

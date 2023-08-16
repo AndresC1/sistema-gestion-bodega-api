@@ -17,7 +17,7 @@ class check_different_organization
     {
         if(auth()->user()->organization_id != $request->provider->organization_id){
             return response([
-                'message' => 'No puedes cambiar datos de otra organizacion',
+                'message' => 'No tienes acceso a datos de otras organizaciones',
                 'estado' => 403
             ], 403);
         }
