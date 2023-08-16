@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Client\ClientCleanResource;
 use App\Models\Client;
-use App\Http\Requests\StoreClientRequest;
-use App\Http\Requests\UpdateClientRequest;
+use App\Http\Requests\Client\StoreClientRequest;
+use App\Http\Requests\Client\UpdateClientRequest;
 use App\Models\Organization;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -60,7 +60,33 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-        //
+        try{
+            $request->validated();
+            $client = Client::create([
+                'name' => $request->name,
+                'address' => $request->address??null,
+                'organization_id' => Auth::user()->organization->id,
+                'municipality_id' => $request->municipality_id,
+                'city_id' => $request->city_id,
+                'type' => $request->type,
+                'phone_main' => $request->phone_main??null,
+                'phone_secondary' => $request->phone_secondary??null,
+                'details' => $request->details??null,
+                'status' => 'active',
+            ]);
+            $client->save();
+            return response()->json([
+                'cliente' => new ClientCleanResource($client),
+                'mensaje' => 'Cliente creado correctamente',
+                'estado' => 201
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al crear el cliente',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**

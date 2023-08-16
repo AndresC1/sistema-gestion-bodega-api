@@ -18,10 +18,22 @@ class Client extends Model
         'phone_secondary',
         'details',
         'status',
+        'municipality_id',
+        'city_id',
     ];
 
     public function organization()
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function municipality()
+    {
+        return $this->belongsTo(Municipality::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 }

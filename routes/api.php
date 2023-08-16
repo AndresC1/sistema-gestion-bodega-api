@@ -116,5 +116,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:view_list_clients_by_organization')->group(function () {
             Route::get('/organization/{organization}/clients', [ClientController::class, "list_clients_by_organization"]);
         });
+        Route::middleware('check_permission:add_clients')->group(function () {
+            Route::post('/client', [ClientController::class, "store"]);
+        });
     });
 });

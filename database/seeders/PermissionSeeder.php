@@ -39,6 +39,7 @@ class PermissionSeeder extends Seeder
             ["name" => "see_my_providers", "description" =>"Ver informacion de proveedores de mi organizacion"],
             ["name" => "list_clients_my_organization", "description" =>"Ver listado de clientes de mi organizacion"],
             ["name" => "view_list_clients_by_organization", "description" =>"Listado de clientes por organizacion"],
+            ["name" => "add_clients", "description" =>"Creacion de nuevos clientes"],
             // ["name" => "", "description" =>""],
         ];
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
