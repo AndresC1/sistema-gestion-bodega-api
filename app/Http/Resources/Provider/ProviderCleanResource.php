@@ -27,6 +27,7 @@ class ProviderCleanResource extends JsonResource
             'phone_main' => $this->phone_main,
             'phone_secondary' => $this->phone_secondary,
             'details' => $this->details,
+            'status' => $this->status,
         ];
     }
 }
