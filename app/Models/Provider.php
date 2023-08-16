@@ -20,6 +20,7 @@ class Provider extends Model
         'phone_main',
         'phone_secondary',
         'details',
+        'status',
     ];
 
     public function organization()
