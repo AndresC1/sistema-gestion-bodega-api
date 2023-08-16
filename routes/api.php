@@ -119,5 +119,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:add_clients')->group(function () {
             Route::post('/client', [ClientController::class, "store"]);
         });
+        Route::middleware('check_permission:update_clients', 'check_different_organization_for_client')->group(function () {
+            Route::patch('/client/{client}', [ClientController::class, "update"]);
+        });
     });
 });

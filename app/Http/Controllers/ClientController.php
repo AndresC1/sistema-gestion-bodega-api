@@ -110,7 +110,22 @@ class ClientController extends Controller
      */
     public function update(UpdateClientRequest $request, Client $client)
     {
-        //
+        try{
+            $request->validated();
+            $client->update($request->all());
+            $client->save();
+            return response()->json([
+                'cliente' => new ClientCleanResource($client),
+                'mensaje' => 'Cliente actualizado correctamente',
+                'estado' => 201
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al actualizar el cliente',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**
