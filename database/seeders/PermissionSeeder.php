@@ -31,6 +31,12 @@ class PermissionSeeder extends Seeder
             ["name" => "list_user_my_organization", "description" =>"Lista de usuarios de la organizacion a la que pertene el usuario"],
             ["name" => "update_my_organization", "description" =>"Actualizar datos de mmi organizacion"],
             ["name" => "view_list_cities_and_municipalities", "description" =>"Ver la lista de ciudades y municipios"],
+            ["name" => "list_providers_my_organization", "description" =>"Ver lista de proveedores de la organizacion"],
+            ["name" => "view_list_providers_by_organization", "description" =>"Listado de proveedores por organizacion"],
+            ["name" => "add_providers", "description" =>"Creacion de nuevos proveedores"],
+            ["name" => "update_providers", "description" =>"Actualizacion de datos de proveedores"],
+            ["name" => "change_status_provider", "description" =>"Cambio de estado por proveedor"],
+            ["name" => "see_my_providers", "description" =>"Ver informacion de proveedores de mi organizacion"],
             // ["name" => "", "description" =>""],
         ];
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

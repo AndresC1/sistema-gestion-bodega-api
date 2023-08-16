@@ -5,7 +5,6 @@ namespace App\Http\Requests\Organization;
 // use Illuminate\Contracts\Validation\Rule;
 
 use App\Models\Organization;
-use App\Rules\OrganizationRule\MatchBothPhone;
 use App\Rules\OrganizationRule\MatchOldAddress;
 use App\Rules\OrganizationRule\MatchOldCity;
 use App\Rules\OrganizationRule\MatchOldMunicipality;
@@ -51,35 +50,35 @@ class UpdateOrganizationRequest extends FormRequest
                 "max:14"
             ],
             "address" => [
-                "nullable", 
+                "nullable",
                 "string",
                 new MatchOldAddress($organization->address)
             ],
             "sector_id" => [
-                "nullable", 
-                "integer", 
+                "nullable",
+                "integer",
                 "exists:sectors,id",
                 new MatchOldSector($organization->sector_id)
             ],
             "municipality_id" => [
-                "nullable", 
-                "integer", 
+                "nullable",
+                "integer",
                 "exists:municipalities,id",
                 new MatchOldMunicipality($organization->municipality_id)
             ],
             "city_id" => [
-                "nullable", 
-                "integer", 
+                "nullable",
+                "integer",
                 "exists:cities,id",
                 new MatchOldCity($organization->city_id)
             ],
             "phone_main" => [
-                "nullable", 
+                "nullable",
                 "string",
                 new MatchOldPhoneMain($organization->phone_main),
             ],
             "phone_secondary" => [
-                "nullable", 
+                "nullable",
                 "string",
                 "different:phone_main",
                 new MatchOldPhoneSecondary($organization->phone_secondary),

@@ -23,4 +23,9 @@ class Municipality extends Model
     {
         return $this->hasMany(Organization::class, 'municipality_id');
     }
+
+    public function providers()
+    {
+        return $this->hasMany(Provider::class, 'municipality_id');
+    }
 }

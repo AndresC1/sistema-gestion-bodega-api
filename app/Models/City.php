@@ -24,4 +24,9 @@ class City extends Model
     {
         return $this->hasMany(Organization::class, 'city_id');
     }
+
+    public function providers()
+    {
+        return $this->hasMany(Provider::class, 'city_id');
+    }
 }

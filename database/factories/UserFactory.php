@@ -26,7 +26,7 @@ class UserFactory extends Factory
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
             'username' => $this->faker->unique()->userName().Str::random(5),
-            'role_id' => fake()->numberBetween(1, $count_roles),
+            'role_id' => fake()->numberBetween(2, $count_roles),
             'organization_id' => fake()->numberBetween(1, $count_organizations),
             'last_login_at' => fake()->dateTime(),
             'status' => fake()->randomElement(['active', 'inactive']),
