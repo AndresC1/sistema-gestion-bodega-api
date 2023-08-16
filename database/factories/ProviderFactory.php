@@ -35,7 +35,8 @@ class ProviderFactory extends Factory
             "address" => $this->faker->address(),
             "phone_main" => '+(505) '.$this->faker->numberBetween(11111111, 99999999),
             "phone_secondary" => '+(505) '.$this->faker->numberBetween(11111111, 99999999),
-            "details" => $this->faker->text()
+            "details" => $this->faker->text(),
+            "status" => $this->faker->randomElement(['active', 'inactive']),
         ];
     }
 }
