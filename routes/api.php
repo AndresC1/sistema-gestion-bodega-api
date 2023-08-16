@@ -8,6 +8,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SectorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\ClientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -106,6 +107,11 @@ Route::prefix('v1')->group(function () {
         });
         Route::middleware('check_permission:see_my_providers', 'check_different_organization_for_provider')->group(function () {
             Route::get('/provider/{provider}', [ProviderController::class, "show"]);
+        });
+
+        // Clientes
+        Route::middleware('check_permission:list_clients_my_organization')->group(function () {
+            Route::get('/clients', [ClientController::class, "index"]);
         });
     });
 });
