@@ -6,6 +6,7 @@ use App\Http\Resources\Client\ClientCleanResource;
 use App\Models\Client;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Models\Organization;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
@@ -92,5 +93,36 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         //
+    }
+
+    public function list_clients_by_organization(Organization $organization){
+        try{
+            $clients = Client::where('organization_id', $organization->id)->paginate(10);
+            return response()->json([
+                'clientes' => ClientCleanResource::collection($clients),
+                'meta' => [
+                    'total' => $clients->total(),
+                    'current_page' => $clients->currentPage(),
+                    'per_page' => $clients->perPage(),
+                    'last_page' => $clients->lastPage(),
+                    'from' => $clients->firstItem(),
+                    'to' => $clients->lastItem()
+                ],
+                'links' => [
+                    'prev_page_url' => $clients->previousPageUrl(),
+                    'next_page_url' => $clients->nextPageUrl(),
+                    'last_page_url' => $clients->url($clients->lastPage()),
+                    'first_page_url' => $clients->url(1)
+                ],
+                'mensaje' => 'Clientes obtenidos correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener los clientes',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 }
