@@ -94,7 +94,19 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-        //
+        try{
+            return response()->json([
+                'cliente' => new ClientCleanResource($client),
+                'mensaje' => 'Cliente obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener el cliente',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**
