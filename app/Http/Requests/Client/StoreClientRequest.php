@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Client;
 
+use App\Rules\Client\ValidateExistInTheOrganization;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreClientRequest extends FormRequest
@@ -22,7 +23,12 @@ class StoreClientRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                new ValidateExistInTheOrganization()
+            ],
             'address' => 'nullable|string|max:255',
             'municipality_id' => 'required|integer|exists:municipalities,id',
             'city_id' => 'required|integer|exists:cities,id',

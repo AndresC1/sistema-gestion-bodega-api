@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Provider;
 
+use App\Rules\Provider\ValidateExistInTheOrganization;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProviderRequest extends FormRequest
@@ -22,7 +23,12 @@ class StoreProviderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                new ValidateExistInTheOrganization()
+            ],
             'email' => 'string|email|max:100',
             'ruc' => 'required|string|max:14',
             'municipality_id' => 'required|integer|exists:municipalities,id',
