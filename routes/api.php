@@ -95,5 +95,14 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:view_list_providers_by_organization')->group(function () {
             Route::get('/organization/{organization}/providers', [ProviderController::class, "list_provider_by_organization"]);
         });
+        Route::middleware('check_permission:add_providers')->group(function () {
+            Route::post('/provider', [ProviderController::class, "store"]);
+        });
+        Route::middleware('check_permission:update_providers', 'check_different_organization_for_provider')->group(function () {
+            Route::patch('/provider/{provider}', [ProviderController::class, "update"]);
+        });
+        Route::middleware('check_permission:change_status_provider', 'check_different_organization_for_provider')->group(function () {
+            Route::patch('/provider/{provider}/change_status', [ProviderController::class, "change_status"]);
+        });
     });
 });
