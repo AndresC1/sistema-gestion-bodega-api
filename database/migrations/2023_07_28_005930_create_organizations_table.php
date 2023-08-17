@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name', 100)->unique();
             $table->string('ruc', 16)->unique();
             $table->string('address');
-            $table->foreignId('sector_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('municipality_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('city_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('sector_id')->constrained('sectors')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('municipality_id')->constrained('municipalities')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('city_id')->constrained('cities')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('phone_main');
             $table->string('phone_secondary')->nullable();
             $table->timestamps();

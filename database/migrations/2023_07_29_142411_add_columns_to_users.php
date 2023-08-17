@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('username', 50)->unique();
             $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('organization_id')->nullable();
-            $table->foreign('organization_id')->references('id')->on('organizations')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('organization_id')->nullable()->constrained('organizations')->cascadeOnDelete()->cascadeOnUpdate();
             $table->dateTime('last_login_at');
             $table->enum('status', ['active', 'inactive'])->default('active');
         });
