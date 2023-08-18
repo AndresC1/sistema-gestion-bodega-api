@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Inventory\TypeInventoryRequest;
+use App\Http\Resources\Inventory\DataMinStockResource;
 use App\Models\Inventory;
-use App\Http\Requests\StoreInventoryRequest;
-use App\Http\Requests\UpdateInventoryRequest;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Inventory\InventoryCleanResource;
 use Exception;
 
@@ -96,5 +96,27 @@ class InventoryController extends Controller
     public function destroy(Inventory $inventory)
     {
         //
+    }
+
+    public function list_min_stock(){
+        try{
+            $product = Inventory::where('organization_id', auth()->user()->organization->id)
+                ->where('stock', '<=', DB::raw('stock_min'))
+                ->get();
+            $finished_product = $product->where('type', 'PT');
+            $raw_material = $product->where('type', 'MP');
+            return response()->json([
+                'productos_terminados' => DataMinStockResource::collection($finished_product),
+                'materia_prima' => DataMinStockResource::collection($raw_material),
+                'mensaje' => 'Inventario de productos con stock minimo obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener lista de productos con stock minimo',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 }
