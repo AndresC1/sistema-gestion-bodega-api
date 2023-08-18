@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Product;
+namespace App\Http\Requests\Inventory;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreProductRequest extends FormRequest
+class TypeInventoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,7 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:products,name',
-            'measurement_type' => 'required|string|in:Longitud,Masa/Peso,Volumen,Unidad',
+            'type' => 'required|string|in:MP,PT',
         ];
     }
 
@@ -35,10 +34,9 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'El nombre del producto es requerido',
-            'name.string' => 'El nombre del producto debe ser una cadena de caracteres',
-            'name.max' => 'El nombre del producto debe tener máximo 255 caracteres',
-            'name.unique' => 'El nombre del producto ya existe',
+            'type.required' => 'El tipo de inventario es requerido',
+            'type.string' => 'El tipo de inventario debe ser una cadena de caracteres',
+            'type.in' => 'El tipo de inventario debe ser MP o PT',
         ];
     }
 }

@@ -49,4 +49,9 @@ class Organization extends Model
     {
         return $this->hasMany(Client::class, 'organization_id');
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'organization_id');
+    }
 }
