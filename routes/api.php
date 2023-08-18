@@ -9,6 +9,7 @@ use App\Http\Controllers\SectorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -128,5 +129,9 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:change_status_client', 'check_different_organization_for_client')->group(function () {
             Route::get('/client/{client}', [ClientController::class, "show"]);
         });
+
+        // Productos
+        Route::get('/products/{name}/search', [ProductController::class, "search"]);
+        Route::post('/product', [ProductController::class, "store"]);
     });
 });
