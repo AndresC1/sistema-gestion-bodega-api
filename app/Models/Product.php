@@ -11,5 +11,11 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'measurement_type'
     ];
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'product_id');
+    }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\InventoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -133,5 +134,10 @@ Route::prefix('v1')->group(function () {
         // Productos
         Route::get('/products/{name}/search', [ProductController::class, "search"]);
         Route::post('/product', [ProductController::class, "store"]);
+
+        // Inventarios
+        Route::middleware('check_permission:view_inventory')->group(function () {
+            Route::get('/inventory', [InventoryController::class, "index"]);
+        });
     });
 });

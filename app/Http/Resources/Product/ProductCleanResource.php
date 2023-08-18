@@ -17,6 +17,7 @@ class ProductCleanResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'measurement_type' => $this->measurement_type,
         ];
     }
 }
