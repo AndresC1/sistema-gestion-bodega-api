@@ -18,6 +18,7 @@ class ProductFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'measurement_type' => $this->faker->randomElement(['Longitud', 'Masa/Peso', 'Volumen', 'Unidad']),
         ];
     }
 }
