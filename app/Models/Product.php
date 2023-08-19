@@ -18,4 +18,9 @@ class Product extends Model
     {
         return $this->hasMany(Inventory::class, 'product_id');
     }
+
+    public function detailsPurchase()
+    {
+        return $this->hasMany(DetailsPurchase::class, 'product_id');
+    }
 }
