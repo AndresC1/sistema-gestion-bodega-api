@@ -54,4 +54,14 @@ class Organization extends Model
     {
         return $this->hasMany(Inventory::class, 'organization_id');
     }
+
+    public function productInputs()
+    {
+        return $this->hasMany(ProductInput::class, 'organization_id');
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class, 'organization_id');
+    }
 }
