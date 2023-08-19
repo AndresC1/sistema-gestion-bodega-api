@@ -11,6 +11,7 @@ class Purchase extends Model
 
     protected $fillable = [
         'number_bill',
+        'organization_id',
         'provider_id',
         'user_id',
         'date',
@@ -30,5 +31,15 @@ class Purchase extends Model
     public function detailsPurchase()
     {
         return $this->hasMany(DetailsPurchase::class);
+    }
+
+    public function productInputs()
+    {
+        return $this->hasMany(ProductInput::class);
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 }

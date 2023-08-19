@@ -26,4 +26,9 @@ class DetailsPurchase extends Model
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
+
+    public function productInputs()
+    {
+        return $this->hasMany(ProductInput::class, 'details_purchase_id');
+    }
 }
