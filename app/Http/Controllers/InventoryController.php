@@ -7,6 +7,7 @@ use App\Http\Resources\Inventory\DataMinStockResource;
 use App\Models\Inventory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Inventory\InventoryCleanResource;
+use App\Http\Requests\Inventory\StoreInventoryRequest;
 use Exception;
 
 class InventoryController extends Controller
@@ -63,7 +64,36 @@ class InventoryController extends Controller
      */
     public function store(StoreInventoryRequest $request)
     {
-        //
+        try{
+            $request->validated();
+            $inventory_product = Inventory::create([
+                'product_id' => $request->product_id,
+                'organization_id' => auth()->user()->organization->id,
+                'type' => $request->type,
+                'stock' => $request->stock,
+                'stock_min' => $request->stock_min,
+                'unit_of_measurement' => $request->unit_of_measurement,
+                'location' => $request->location,
+                'date_last_modified' => now('America/Managua'),
+                'lot_number' => $request->lot_number,
+                'note' => $request->note,
+                'status' => $request->stock == 0 ? 'no disponible' : 'disponible',
+                'total_value' => $request->total_value,
+                'code' => $request->code,
+                'description' => $request->description,
+            ]);
+            $inventory_product->save();
+            return response()->json([
+                'mensaje' => 'Producto registrado al inventario correctamente',
+                'estado' => 201
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al registrar producto al inventario',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**
