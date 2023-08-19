@@ -56,4 +56,8 @@ class User extends Authenticatable
     public function organization(){
         return $this->belongsTo(Organization::class, 'organization_id');
     }
+
+    public function purchases(){
+        return $this->hasMany(Purchase::class);
+    }
 }

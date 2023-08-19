@@ -37,4 +37,9 @@ class Provider extends Model
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
 }
