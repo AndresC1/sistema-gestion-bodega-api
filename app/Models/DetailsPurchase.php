@@ -31,4 +31,9 @@ class DetailsPurchase extends Model
     {
         return $this->hasMany(ProductInput::class, 'details_purchase_id');
     }
+
+    public function detailsProductInputs()
+    {
+        return $this->hasMany(DetailsProductInput::class, 'details_purchase_id');
+    }
 }

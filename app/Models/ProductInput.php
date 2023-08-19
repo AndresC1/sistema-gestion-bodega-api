@@ -40,4 +40,9 @@ class ProductInput extends Model
     {
         return $this->belongsTo(DetailsPurchase::class, 'details_purchase_id');
     }
+
+    public function detailsProductInputs()
+    {
+        return $this->hasMany(DetailsProductInput::class, 'product_input_id');
+    }
 }
