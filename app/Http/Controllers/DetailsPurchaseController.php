@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\DetailsPurchase;
 use App\Http\Requests\StoreDetailsPurchaseRequest;
-use App\Http\Requests\UpdateDetailsPurchaseRequest;
 
 class DetailsPurchaseController extends Controller
 {

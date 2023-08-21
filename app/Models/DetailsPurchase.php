@@ -15,6 +15,8 @@ class DetailsPurchase extends Model
         'quantity',
         'price',
         'total',
+        'disponibility',
+        'observation',
     ];
 
     public function purchase()
