@@ -139,10 +139,12 @@ Route::prefix('v1')->group(function () {
         // Inventarios
         Route::middleware('check_permission:view_inventory')->group(function () {
             Route::get('/inventory', [InventoryController::class, "index"]);
-            Route::post('/inventory', [InventoryController::class, "store"]);
             Route::prefix('inventario')->group(function () {
                 Route::get('/min-stock', [InventoryController::class, "list_min_stock"]);
             });
+        });
+        Route::middleware('check_permission:add_inventory')->group(function () {
+            Route::post('/inventory', [InventoryController::class, "store"]);
         });
 
         // Compras

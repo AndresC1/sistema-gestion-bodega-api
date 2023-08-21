@@ -70,7 +70,7 @@ class InventoryController extends Controller
                 'product_id' => $request->product_id,
                 'organization_id' => auth()->user()->organization->id,
                 'type' => $request->type,
-                'stock' => $request->stock,
+                'stock' => 0,
                 'stock_min' => $request->stock_min,
                 'unit_of_measurement' => $request->unit_of_measurement,
                 'location' => $request->location,
@@ -84,6 +84,7 @@ class InventoryController extends Controller
             ]);
             $inventory_product->save();
             return response()->json([
+                'inventario' => new InventoryCleanResource($inventory_product),
                 'mensaje' => 'Producto registrado al inventario correctamente',
                 'estado' => 201
             ], 201);
