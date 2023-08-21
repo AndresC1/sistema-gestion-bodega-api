@@ -11,6 +11,7 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PurchaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -142,6 +143,14 @@ Route::prefix('v1')->group(function () {
             Route::prefix('inventario')->group(function () {
                 Route::get('/min-stock', [InventoryController::class, "list_min_stock"]);
             });
+        });
+
+        // Compras
+        Route::middleware('check_permission:view_purchase')->group(function () {
+            Route::get('/purchases', [PurchaseController::class, "index"]);
+        });
+        Route::middleware('check_permission:register_purchase', 'validate_listDetailsPurchase')->group(function () {
+            Route::post('/purchase', [PurchaseController::class, "store"]);
         });
     });
 });

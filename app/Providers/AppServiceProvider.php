@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repository\EntryProductRepository;
+use App\Repository\DetailsPurchaseRepository;
+use App\Repository\InventoryRepository;
+use App\Repository\PurchaseRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +15,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(DetailsPurchaseRepository::class, function ($app) {
+            return new DetailsPurchaseRepository();
+        });
+        $this->app->bind(EntryProductRepository::class, function ($app) {
+            return new EntryProductRepository();
+        });
+        $this->app->bind(InventoryRepository::class, function ($app) {
+            return new InventoryRepository();
+        });
+        $this->app->bind(PurchaseRepository::class, function ($app) {
+            return new PurchaseRepository();
+        });
     }
 
     /**
