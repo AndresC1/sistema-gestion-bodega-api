@@ -30,7 +30,6 @@ class StoreInventoryRequest extends FormRequest
                 new ValidateExistInTheOrganization()
             ],
             'type' => 'required|in:MP,PT',
-            'stock' => 'required|numeric|min:0',
             'stock_min' => 'required|numeric|min:0',
             'unit_of_measurement' => 'required|max:3',
             'location' => 'string|max:255|nullable',
