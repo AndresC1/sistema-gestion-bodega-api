@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EntryProduct\EntryProductResource;
 use App\Models\ProductInput;
-use App\Http\Requests\StoreProductInputRequest;
-use App\Http\Requests\UpdateProductInputRequest;
+use App\Http\Requests\ProductInput\StoreProductInputRequest;
+use App\Services\EntryProductService;
+use Exception;
 
 class ProductInputController extends Controller
 {
@@ -27,9 +29,33 @@ class ProductInputController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductInputRequest $request)
+    public function store(StoreProductInputRequest $request, EntryProductService $entryProductService)
     {
-        //
+        try{
+            $validate = $entryProductService->Validate($request->json()->all());
+            if($validate != null){
+                return response()->json([
+                    'message' => 'Error al registrar el producto terminado',
+                    'error' => $validate,
+                    'estado' => 422
+                ], 422);
+            }
+            $request->validated();
+
+            $productInput = $entryProductService->insertProductInput($request, $request->json()->all());
+
+            return response()->json([
+                'productInput' => EntryProductResource::make(ProductInput::find($productInput)),
+                'mensaje' => 'Producto terminado registrado correctamente',
+                'estado' => 201
+            ], 201);
+        } catch (Exception $e){
+            return response()->json([
+                'mensaje' => 'Error al registrar el producto terminado',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**
