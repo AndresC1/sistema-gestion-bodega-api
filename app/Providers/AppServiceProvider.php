@@ -7,6 +7,7 @@ use App\Repository\EntryProductRepository;
 use App\Repository\DetailsPurchaseRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\PurchaseRepository;
+use App\Repository\DetailsEntryProductRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->bind(PurchaseRepository::class, function ($app) {
             return new PurchaseRepository();
+        });
+        $this->app->bind(DetailsEntryProductRepository::class, function ($app) {
+            return new DetailsEntryProductRepository();
         });
     }
 

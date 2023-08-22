@@ -11,5 +11,6 @@ class EntryProductRepository
         $entry = new ProductInput();
         $entry->fill($data);
         $entry->save();
+        return $entry->id;
     }
 }

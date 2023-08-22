@@ -12,6 +12,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\ProductInputController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -153,6 +154,11 @@ Route::prefix('v1')->group(function () {
         });
         Route::middleware('check_permission:register_purchase', 'validate_listDetailsPurchase')->group(function () {
             Route::post('/purchase', [PurchaseController::class, "store"]);
+        });
+
+        // Entrada de producto terminado
+        Route::prefix('register')->middleware('check_permission:register_finished_product')->group(function () {
+            Route::post('/finished_product', [ProductInputController::class, "store"]);
         });
     });
 });

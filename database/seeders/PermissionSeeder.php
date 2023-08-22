@@ -47,6 +47,7 @@ class PermissionSeeder extends Seeder
             ["name" => "view_purchase", "description" =>"Ver compras de la organizacion"],
             ["name" => "register_purchase", "description" =>"Registrar compra en la organizacion"],
             ["name" => "add_inventory", "description" =>"Registro producto al inventario de la organizacion"],
+            ["name" => "register_finished_product", "description" =>"Registro de producto terminado en el inventario"],
             // ["name" => "", "description" =>""],
         ];
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

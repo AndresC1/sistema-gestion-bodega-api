@@ -15,7 +15,6 @@ class InventoryService
     }
     public function update($inventory, $quantity, $total_value)
     {
-//        $inventory = Inventory::find($inventory->id);
         $this->inventoryRepository->update($inventory, $quantity, $total_value);
     }
 }

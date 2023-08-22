@@ -15,6 +15,7 @@ class InventoryCleanResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'product' => $this->product->name,
             'type' => $this->type,
             'stock' => $this->stock,
