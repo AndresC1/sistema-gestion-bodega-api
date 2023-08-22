@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EntryProduct\EntryProductResource;
 use App\Models\ProductInput;
 use App\Http\Requests\ProductInput\StoreProductInputRequest;
 use App\Services\EntryProductService;
@@ -44,8 +45,8 @@ class ProductInputController extends Controller
             $productInput = $entryProductService->insertProductInput($request, $request->json()->all());
 
             return response()->json([
+                'productInput' => EntryProductResource::make(ProductInput::find($productInput)),
                 'mensaje' => 'Producto terminado registrado correctamente',
-                'productInput' => $productInput,
                 'estado' => 201
             ], 201);
         } catch (Exception $e){
