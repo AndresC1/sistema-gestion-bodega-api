@@ -36,4 +36,9 @@ class Client extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class, 'client_id');
+    }
 }
