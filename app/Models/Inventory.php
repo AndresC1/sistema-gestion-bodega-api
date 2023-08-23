@@ -39,4 +39,9 @@ class Inventory extends Model
     {
         return $this->hasMany(ProductInput::class, 'inventory_id');
     }
+
+    public function productOutputs()
+    {
+        return $this->hasMany(OutputsProduct::class, 'inventory_id');
+    }
 }

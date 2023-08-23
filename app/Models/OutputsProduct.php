@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductInput extends Model
+class OutputsProduct extends Model
 {
     use HasFactory;
 
@@ -13,12 +13,10 @@ class ProductInput extends Model
         'inventory_id',
         'organization_id',
         'user_id',
-        'details_purchase_id',
         'date',
         'quantity',
         'price',
         'total',
-        'observation'
     ];
 
     public function inventory()
@@ -34,20 +32,5 @@ class ProductInput extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function detailsPurchase()
-    {
-        return $this->belongsTo(DetailsPurchase::class, 'details_purchase_id');
-    }
-
-    public function detailsProductInputs()
-    {
-        return $this->hasMany(DetailsProductInput::class, 'product_input_id');
-    }
-
-    public function detailsProductOutputs()
-    {
-        return $this->hasMany(DetailsProductOutput::class, 'product_input_id');
     }
 }

@@ -64,4 +64,19 @@ class Organization extends Model
     {
         return $this->hasMany(Purchase::class, 'organization_id');
     }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class, 'organization_id');
+    }
+
+    public function detailsSales()
+    {
+        return $this->hasMany(DetailsSale::class, 'organization_id');
+    }
+
+    public function ProductOutputs()
+    {
+        return $this->hasMany(OutputsProduct::class, 'organization_id');
+    }
 }

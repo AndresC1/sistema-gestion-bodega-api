@@ -58,10 +58,18 @@ class User extends Authenticatable
     }
 
     public function purchases(){
-        return $this->hasMany(Purchase::class);
+        return $this->hasMany(Purchase::class, 'user_id');
     }
 
     public function productInputs(){
-        return $this->hasMany(ProductInput::class);
+        return $this->hasMany(ProductInput::class, 'user_id');
+    }
+
+    public function sales(){
+        return $this->hasMany(Sale::class, 'user_id');
+    }
+
+    public function productOutput(){
+        return $this->hasMany(OutputsProduct::class, 'user_id');
     }
 }
