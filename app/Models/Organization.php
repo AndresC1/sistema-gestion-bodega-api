@@ -75,6 +75,11 @@ class Organization extends Model
         return $this->hasMany(DetailsSale::class, 'organization_id');
     }
 
+    public function detailsPurchases()
+    {
+        return $this->hasMany(DetailsPurchase::class, 'organization_id');
+    }
+
     public function ProductOutputs()
     {
         return $this->hasMany(OutputsProduct::class, 'organization_id');

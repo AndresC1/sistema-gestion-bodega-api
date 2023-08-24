@@ -45,6 +45,7 @@ class DetailsPurchaseService
     }
     protected function store($purchase_id, $product_id, $detailPurchase){
         $this->purchaseRepository->create([
+            'organization_id' => auth()->user()->organization_id,
             'purchase_id' => $purchase_id,
             'product_id' => $product_id,
             'quantity' => $detailPurchase['quantity'],
