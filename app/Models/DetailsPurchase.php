@@ -10,6 +10,7 @@ class DetailsPurchase extends Model
     use HasFactory;
 
     protected $fillable = [
+        'organization_id',
         'purchase_id',
         'product_id',
         'quantity',
@@ -37,5 +38,10 @@ class DetailsPurchase extends Model
     public function detailsProductInputs()
     {
         return $this->hasMany(DetailsProductInput::class, 'details_purchase_id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 }
