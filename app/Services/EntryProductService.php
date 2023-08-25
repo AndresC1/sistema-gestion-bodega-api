@@ -8,6 +8,7 @@ use App\Repository\EntryProductRepository;
 use App\Rules\ProductInput\ValidateDetailsPurchaseExistInTheOrganization;
 use App\Services\DetailsEntryProductService;
 use App\Services\InventoryService;
+use App\Services\OutputProductService;
 use Exception;
 use DateTime;
 use Illuminate\Support\Facades\Validator;
@@ -17,15 +18,10 @@ class EntryProductService
     private $entryProductRepository;
     private $detailsEntryProductService;
     private $inventoryService;
+    private $outputProductService;
 
-    public function __construct(
-        EntryProductRepository $entryProductRepository,
-        DetailsEntryProductService $detailsEntryProductService,
-        InventoryService $inventoryService
-    ){
-        $this->entryProductRepository = $entryProductRepository;
-        $this->detailsEntryProductService = $detailsEntryProductService;
-        $this->inventoryService = $inventoryService;
+    public function __construct(){
+        $this->entryProductRepository = new EntryProductRepository();
     }
     public function store($inventory_id, $quantity, $price, $total, $observation)
     {
@@ -45,14 +41,19 @@ class EntryProductService
     }
 
     public function insertProductInput($request, $dataEntryProduct){
+        $this->detailsEntryProductService = new DetailsEntryProductService();
+        $this->inventoryService = new InventoryService();
+        $this->outputProductService = new OutputProductService();
+
         $total = 0;
         $detailsEntryProduct = [];
         foreach ($dataEntryProduct as $entryProduct) {
-            $detailPurchase = DetailsPurchase::find($entryProduct['detail_purchase_id'])->first();
+            $detailPurchase = DetailsPurchase::find($entryProduct['detail_purchase_id']);
             $detailsEntryProduct[] = [
                 $entryProduct['detail_purchase_id'],
                 $entryProduct['quantity'],
-                $detailPurchase->price
+                $detailPurchase->price,
+                $detailPurchase->product_id
             ];
             $total += $entryProduct['quantity'] * $detailPurchase->price;
         }
@@ -70,8 +71,10 @@ class EntryProductService
                 $entryProduct[1],
                 $entryProduct[2]
             );
+            $total = $entryProduct[1] * $entryProduct[2];
+            $this->outputProductService->Register($entryProduct[0], $entryProduct[1], $total, $entryProduct[3], $entryProduct[2]);
         }
-        $this->inventoryService->update(
+        $this->inventoryService->update_increase(
             Inventory::find($request->inventory_id),
             $request->quantity,
             $total

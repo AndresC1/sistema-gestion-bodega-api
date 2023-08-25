@@ -17,6 +17,7 @@ class OutputsProduct extends Model
         'quantity',
         'price',
         'total',
+        'observation'
     ];
 
     public function inventory()

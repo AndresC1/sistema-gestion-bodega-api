@@ -9,9 +9,9 @@ class DetailsEntryProductService
 {
     private $detailsEntryProductRepository;
 
-    public function __construct(DetailsEntryProductRepository $detailsEntryProductRepository)
+    public function __construct()
     {
-        $this->detailsEntryProductRepository = $detailsEntryProductRepository;
+        $this->detailsEntryProductRepository = new DetailsEntryProductRepository();
     }
 
     public function store($entry_product_id, $detail_purchase_id, $quantity, $price)
