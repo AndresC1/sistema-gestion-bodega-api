@@ -10,12 +10,8 @@ class PurchaseService
     private $detailsPurchaseService;
     private $purchase_new;
 
-    public function __construct(
-        PurchaseRepository $purchaseRepository,
-        DetailsPurchaseService $detailsPurchaseService
-    ){
-        $this->purchaseRepository = $purchaseRepository;
-        $this->detailsPurchaseService = $detailsPurchaseService;
+    public function __construct(){
+        $this->purchaseRepository = new PurchaseRepository();
     }
     public function create($request)
     {
@@ -24,6 +20,7 @@ class PurchaseService
     }
     public function insertDetailsPurchase($data_detailsPurchase, $request)
     {
+        $this->detailsPurchaseService = new DetailsPurchaseService();
         $this->detailsPurchaseService->createDetailsPurchase([
             'purchase_id' => $this->purchase_new->id,
             'listDetailsPurchase' => $data_detailsPurchase,

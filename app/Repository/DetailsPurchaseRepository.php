@@ -12,4 +12,10 @@ class DetailsPurchaseRepository
         $purchase->fill($data);
         $purchase->save();
     }
+    public function update($data, $id)
+    {
+        $purchase = DetailsPurchase::find($id);
+        $purchase->fill($data);
+        $purchase->save();
+    }
 }

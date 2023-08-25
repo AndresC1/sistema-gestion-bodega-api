@@ -16,14 +16,10 @@ class DetailsPurchaseService
     protected $EntryProductService;
     protected $InventoryService;
 
-    public function __construct(
-        DetailsPurchaseRepository $purchaseRepository,
-        EntryProductService       $EntryProductService,
-        InventoryService          $InventoryService
-    ){
-        $this->purchaseRepository = $purchaseRepository;
-        $this->EntryProductService = $EntryProductService;
-        $this->InventoryService = $InventoryService;
+    public function __construct(){
+        $this->purchaseRepository = new DetailsPurchaseRepository();
+        $this->EntryProductService = new EntryProductService();
+        $this->InventoryService = new InventoryService();
     }
     public function createDetailsPurchase($data){
         foreach ($data['listDetailsPurchase'] as $detailPurchase){
@@ -64,7 +60,7 @@ class DetailsPurchaseService
             ->first();
     }
     protected function updateInventory($inventory, $quantity, $total){
-        $this->InventoryService->update(
+        $this->InventoryService->update_increase(
             $inventory,
             $quantity,
             $total,
@@ -101,5 +97,10 @@ class DetailsPurchaseService
         }
         $validator_listDetailsPurchase->validate();
         return null;
+    }
+    public function update_disponibility($detailPurchase_id, $quantity){
+        $detailPurchase = DetailsPurchase::find($detailPurchase_id);
+        $detailPurchase->disponibility -= $quantity;
+        $this->purchaseRepository->update($detailPurchase->toArray(), $detailPurchase_id);
     }
 }

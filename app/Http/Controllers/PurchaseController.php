@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Purchase;
+use App\Repository\DetailsPurchaseRepository;
+use App\Repository\EntryProductRepository;
+use App\Repository\PurchaseRepository;
 use App\Rules\Purchase\ValidateTypeProduct;
+use App\Services\EntryProductService;
+use App\Services\InventoryService;
 use Exception;
 use App\Http\Resources\Purchase\PurchaseCleanResource;
 use App\Http\Requests\Purchase\StorePurchaseRequest;
@@ -62,10 +67,11 @@ class PurchaseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePurchaseRequest $request, DetailsPurchaseService $DetailsPurchaseService, PurchaseService $PurchaseService)
+    public function store(StorePurchaseRequest $request)
     {
         try{
             $data_detailsPurchase = $request->json()->all();
+            $DetailsPurchaseService = new DetailsPurchaseService();
             $validate = $DetailsPurchaseService->ValidateData($data_detailsPurchase);
             if($validate != null){
                 return response()->json([
@@ -76,6 +82,7 @@ class PurchaseController extends Controller
             }
             $request->validated();
 
+            $PurchaseService = new PurchaseService();
             $purchase_new = $PurchaseService->create($request, $data_detailsPurchase);
             $PurchaseService->insertDetailsPurchase($data_detailsPurchase, $request);
 

@@ -9,12 +9,16 @@ class InventoryService
 {
     private $inventoryRepository;
 
-    public function __construct(InventoryRepository $inventoryRepository)
+    public function __construct()
     {
-        $this->inventoryRepository = $inventoryRepository;
+        $this->inventoryRepository = new InventoryRepository();
     }
-    public function update($inventory, $quantity, $total_value)
+    public function update_increase($inventory, $quantity, $total_value)
     {
-        $this->inventoryRepository->update($inventory, $quantity, $total_value);
+        $this->inventoryRepository->update_increase($inventory, $quantity, $total_value);
+    }
+    public function update_decrease($inventory, $quantity, $total_value)
+    {
+        $this->inventoryRepository->update_decrease($inventory, $quantity, $total_value);
     }
 }

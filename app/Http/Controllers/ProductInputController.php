@@ -35,7 +35,7 @@ class ProductInputController extends Controller
             $validate = $entryProductService->Validate($request->json()->all());
             if($validate != null){
                 return response()->json([
-                    'message' => 'Error al registrar el producto terminado',
+                    'message' => 'Error al validar datos',
                     'error' => $validate,
                     'estado' => 422
                 ], 422);
