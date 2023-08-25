@@ -8,6 +8,7 @@ use App\Models\Inventory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Inventory\InventoryCleanResource;
 use App\Http\Requests\Inventory\StoreInventoryRequest;
+use App\Http\Resources\Inventory\InventoryResource;
 use Exception;
 
 class InventoryController extends Controller
@@ -102,7 +103,19 @@ class InventoryController extends Controller
      */
     public function show(Inventory $inventory)
     {
-        //
+        try{
+            return response()->json([
+                'inventario' => new InventoryResource($inventory),
+                'mensaje' => 'Inventario obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener el inventario',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**
