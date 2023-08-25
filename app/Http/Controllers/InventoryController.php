@@ -78,7 +78,7 @@ class InventoryController extends Controller
                 'lot_number' => $request->lot_number,
                 'note' => $request->note,
                 'status' => $request->stock == 0 ? 'no disponible' : 'disponible',
-                'total_value' => $request->total_value,
+                'total_value' => 0,
                 'code' => $request->code,
                 'description' => $request->description,
             ]);

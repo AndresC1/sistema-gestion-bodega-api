@@ -35,7 +35,6 @@ class StoreInventoryRequest extends FormRequest
             'location' => 'string|max:255|nullable',
             'lot_number' => 'string|max:255|nullable',
             'note' => 'string|max:255|nullable',
-            'total_value' => 'required|numeric|min:0',
             'code' => [
                 'string',
                 'max:255',
