@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProductInputController;
+use App\Http\Controllers\DetailsPurchaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -159,6 +160,9 @@ Route::prefix('v1')->group(function () {
         // Entrada de producto terminado
         Route::prefix('register')->middleware('check_permission:register_finished_product')->group(function () {
             Route::post('/finished_product', [ProductInputController::class, "store"]);
+        });
+        Route::middleware('check_permission:register_finished_product')->group(function () {
+            Route::get('/details_purchase', [DetailsPurchaseController::class, "index"]);
         });
     });
 });
