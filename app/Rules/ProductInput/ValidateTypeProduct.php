@@ -17,7 +17,7 @@ class ValidateTypeProduct implements ValidationRule
     {
         $inventory = Inventory::find($value);
 
-        if ($inventory->type == 'PT') {
+        if ($inventory->type != 'PT') {
             $fail(__("El producto no es un producto terminado."));
         }
     }
