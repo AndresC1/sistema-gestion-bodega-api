@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductInput\ShowInventoryRequest;
 use App\Http\Resources\EntryProduct\EntryProductResource;
+use App\Models\Inventory;
 use App\Models\ProductInput;
 use App\Http\Requests\ProductInput\StoreProductInputRequest;
 use App\Services\EntryProductService;
@@ -61,9 +63,36 @@ class ProductInputController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProductInput $productInput)
+    public function show(ShowInventoryRequest $request)
     {
-        //
+        try{
+            $productInputs = Inventory::find($request->inventory_id)->productInputs()->paginate(10);
+            return response()->json([
+                'entradas' => EntryProductResource::collection($productInputs),
+                'meta' => [
+                    'total' => $productInputs->total(),
+                    'current_page' => $productInputs->currentPage(),
+                    'per_page' => $productInputs->perPage(),
+                    'last_page' => $productInputs->lastPage(),
+                    'from' => $productInputs->firstItem(),
+                    'to' => $productInputs->lastItem()
+                ],
+                'links' => [
+                    'prev_page_url' => $productInputs->previousPageUrl(),
+                    'next_page_url' => $productInputs->nextPageUrl(),
+                    'last_page_url' => $productInputs->url($productInputs->lastPage()),
+                    'first_page_url' => $productInputs->url(1)
+                ],
+                'mensaje' => 'Entradas obtenidas correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e){
+            return response()->json([
+                'mensaje' => 'Error al obtener las entradas',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**

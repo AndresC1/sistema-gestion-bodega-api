@@ -23,6 +23,7 @@ class EntryProductResource extends JsonResource
             'price' => $this->price,
             'total' => $this->total,
             'products' => DetailsInputProductResource::collection($this->detailsProductInputs),
+            'disponibility' => $this->disponibility,
             'observation' => $this->observation,
         ];
     }
