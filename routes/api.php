@@ -164,5 +164,6 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:register_finished_product')->group(function () {
             Route::get('/details_purchase', [DetailsPurchaseController::class, "index"]);
         });
+        Route::get('/product_input', [ProductInputController::class, "show"]);
     });
 });
