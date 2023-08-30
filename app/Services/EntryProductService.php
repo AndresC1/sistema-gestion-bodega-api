@@ -23,7 +23,7 @@ class EntryProductService
     public function __construct(){
         $this->entryProductRepository = new EntryProductRepository();
     }
-    public function store($inventory_id, $quantity, $price, $total, $observation)
+    public function store($inventory_id, $quantity, $price, $total, $observation, $disponibility = null)
     {
         $EntryProductId = $this->entryProductRepository->create([
             'inventory_id' => $inventory_id,
@@ -34,6 +34,7 @@ class EntryProductService
             'price' => $price,
             'total' => $total,
             'observation' => $observation,
+            'disponibility' => $disponibility,
             'created_at' => new DateTime(),
             'updated_at' => new DateTime(),
         ]);
@@ -62,7 +63,8 @@ class EntryProductService
             $request->quantity,
             $total / $request->quantity,
             $total,
-            "Registro de producto terminado el " . now('America/Managua')->format('d/m/Y')
+            "Registro de producto terminado el " . now('America/Managua')->format('d/m/Y'),
+            $request->quantity
         );
         foreach ($detailsEntryProduct as $entryProduct) {
             $this->detailsEntryProductService->store(

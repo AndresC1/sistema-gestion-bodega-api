@@ -18,7 +18,8 @@ class ProductInput extends Model
         'quantity',
         'price',
         'total',
-        'observation'
+        'observation',
+        'disponibility',
     ];
 
     public function inventory()
