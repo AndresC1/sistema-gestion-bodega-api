@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\DetailsPurchase;
 use App\Models\Inventory;
+use App\Models\ProductInput;
 use App\Repository\EntryProductRepository;
 use App\Rules\ProductInput\ValidateDetailsPurchaseExistInTheOrganization;
 use App\Services\DetailsEntryProductService;
@@ -114,5 +115,9 @@ class EntryProductService
         if ($value > $detailPurchase->disponibility) {
             throw new Exception("La cantidad ingresada es mayor a la cantidad que dispone en la compra.");
         }
+    }
+    public function updateDisponibility($input_id, $quantity){
+        $input = ProductInput::find($input_id);
+        $this->entryProductRepository->update($input, $quantity);
     }
 }

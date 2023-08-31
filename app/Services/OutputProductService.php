@@ -17,6 +17,15 @@ class OutputProductService
     public function __construct() {
         $this->outputProductRepository = new OutputProductRepository();
     }
+    public function store($data){
+        $this->outputProductRepository->create([
+            'inventory_id' => $data['inventory_id'],
+            'quantity' => $data['quantity'],
+            'total' => $data['total'],
+            'price' => $data['price'],
+            'observation' => $data['observation'],
+        ]);
+    }
 
     public function Register($detail_purchase_id, $quantity, $total, $product_id, $price){
         $this->detailsPurchaseService = new DetailsPurchaseService();
@@ -26,7 +35,7 @@ class OutputProductService
             ->where('organization_id', auth()->user()->organization->id)
             ->first();
         $this->detailsPurchaseService->update_disponibility($detail_purchase_id, $quantity);
-        $this->outputProductRepository->create([
+        $this->store([
             'inventory_id' => $inventory->id,
             'quantity' => $quantity,
             'total' => $total,

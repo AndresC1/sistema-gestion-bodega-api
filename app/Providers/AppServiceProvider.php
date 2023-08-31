@@ -9,6 +9,8 @@ use App\Repository\InventoryRepository;
 use App\Repository\PurchaseRepository;
 use App\Repository\DetailsEntryProductRepository;
 use App\Repository\OutputProductRepository;
+use App\Repository\SaleRepository;
+use App\Repository\DetailsSaleRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +36,12 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->bind(OutputProductRepository::class, function ($app) {
             return new OutputProductRepository();
+        });
+        $this->app->bind(SaleRepository::class, function ($app) {
+            return new SaleRepository();
+        });
+        $this->app->bind(DetailsSaleRepository::class, function ($app) {
+            return new DetailsSaleRepository();
         });
     }
 
