@@ -13,4 +13,10 @@ class EntryProductRepository
         $entry->save();
         return $entry->id;
     }
+    public function update(ProductInput $entry, $quantity)
+    {
+        $entry->disponibility = $entry->disponibility - $quantity;
+        $entry->save();
+        return $entry;
+    }
 }

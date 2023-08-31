@@ -14,6 +14,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProductInputController;
 use App\Http\Controllers\DetailsPurchaseController;
+use App\Http\Controllers\SaleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -164,6 +165,9 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:register_finished_product')->group(function () {
             Route::get('/details_purchase', [DetailsPurchaseController::class, "index"]);
         });
-        Route::get('/product_input', [ProductInputController::class, "show"]);
+        Route::middleware('check_permission:register_sale')->group(function () {
+            Route::get('/product_input', [ProductInputController::class, "show"]);
+            Route::post('/sale', [SaleController::class, "store"]);
+        });
     });
 });
