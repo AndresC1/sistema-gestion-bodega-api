@@ -15,6 +15,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProductInputController;
 use App\Http\Controllers\DetailsPurchaseController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\Conversion\ConverterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -169,5 +170,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/product_input', [ProductInputController::class, "show"]);
             Route::post('/sale', [SaleController::class, "store"]);
         });
+        Route::get('/list_measurements', [ConverterController::class, "list_units"]);
+        Route::get('/list_type_measurements', [ConverterController::class, "list_types_measurements"]);
     });
 });

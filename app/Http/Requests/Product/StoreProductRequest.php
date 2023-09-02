@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Rules\Converter\ValidateTypeMeasurement;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductRequest extends FormRequest
@@ -23,7 +24,11 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:products,name',
-            'measurement_type' => 'required|string|in:Longitud,Masa/Peso,Volumen,Unidad',
+            'measurement_type' => [
+                'required',
+                'string',
+                new ValidateTypeMeasurement(),
+            ],
         ];
     }
 
