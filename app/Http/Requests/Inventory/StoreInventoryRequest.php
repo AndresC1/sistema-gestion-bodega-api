@@ -4,6 +4,7 @@ namespace App\Http\Requests\Inventory;
 
 use App\Rules\Inventory\ValidateCodeExistInTheOrganization;
 use App\Rules\Inventory\ValidateExistInTheOrganization;
+use App\Rules\Inventory\ValidateUnitMeasurement;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreInventoryRequest extends FormRequest
@@ -23,6 +24,7 @@ class StoreInventoryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $product_id = request('product_id');
         return [
             'product_id' => [
                 'required',
@@ -31,7 +33,11 @@ class StoreInventoryRequest extends FormRequest
             ],
             'type' => 'required|in:MP,PT',
             'stock_min' => 'required|numeric|min:0',
-            'unit_of_measurement' => 'required|max:3',
+            'unit_of_measurement' => [
+                'required',
+                'max:3',
+                new ValidateUnitMeasurement($product_id)
+            ],
             'location' => 'string|max:255|nullable',
             'lot_number' => 'string|max:255|nullable',
             'note' => 'string|max:255|nullable',
