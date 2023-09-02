@@ -10,6 +10,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: laravel
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - name: Checkout del código fuente
         uses: actions/checkout@v2
@@ -20,7 +32,7 @@ jobs:
           php-version: '8.1'
 
       - name: Actualizacion de dependencias
-        run: composer update
+        run: composer install
 
       - name: Instalar dependencias
         run: composer install
@@ -31,8 +43,15 @@ jobs:
       - name: Generar clave de aplicación
         run: php artisan key:generate
 
+      - name: Esperar a que MySQL esté disponible
+        run: |
+          until mysqladmin ping -hmysql -uroot -p${{ secrets.MYSQL_ROOT_PASSWORD }}; do
+          echo "Esperando a que MySQL esté disponible..."
+          sleep 5
+          done
+
       - name: Ejecutar migraciones
-        run: php artisan migrate
+        run: php artisan migrate --force
 
       - name: Ejecutar seeders
         run: php artisan db:seed
