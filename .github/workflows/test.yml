@@ -46,9 +46,9 @@ jobs:
 
       - name: Esperar a que MySQL esté disponible
         run: |
-          until mysqladmin ping -hmysql -uroot -p${{ secrets.MYSQL_ROOT_PASSWORD }}; do
-          echo "Esperando a que MySQL esté disponible..."
-          sleep 5
+          until mysqladmin ping -h127.0.0.1 -uroot -p; do
+            echo "Esperando a que MySQL esté disponible..."
+            sleep 5
           done
 
       - name: Ejecutar migraciones
