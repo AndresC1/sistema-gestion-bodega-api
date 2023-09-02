@@ -1,0 +1,44 @@
+name: Ejecutar Tests de conversiones
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código fuente
+        uses: actions/checkout@v2
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Actualizacion de dependencias
+        run: composer install
+
+      - name: Instalar dependencias
+        run: composer install
+
+      - name: Copiar archivo .env
+        run: cp .env.example .env
+
+      - name: Generar clave de aplicación
+        run: php artisan key:generate
+
+      - name: Ejecutar tests de volumen
+        run: php artisan test --filter ConverterVolumeTest
+
+      - name: Ejecutar tests de longitud
+        run: php artisan test --filter ConverterLengthTest
+
+      - name: Ejecutar tests de masa
+        run: php artisan test --filter ConverterWeightTest
+
+      - name: Ejecutar tests de unidad
+        run: php artisan test --filter ConverterUnitTest
