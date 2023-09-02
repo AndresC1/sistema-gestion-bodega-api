@@ -9,6 +9,7 @@ use App\Models\ProductInput;
 use App\Http\Requests\ProductInput\StoreProductInputRequest;
 use App\Services\EntryProductService;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ProductInputController extends Controller
 {
@@ -34,6 +35,7 @@ class ProductInputController extends Controller
     public function store(StoreProductInputRequest $request, EntryProductService $entryProductService)
     {
         try{
+            DB::beginTransaction();
             $validate = $entryProductService->Validate($request->json()->all());
             if($validate != null){
                 return response()->json([
@@ -45,13 +47,14 @@ class ProductInputController extends Controller
             $request->validated();
 
             $productInput = $entryProductService->insertProductInput($request, $request->json()->all());
-
+            DB::commit();
             return response()->json([
                 'productInput' => EntryProductResource::make(ProductInput::find($productInput)),
                 'mensaje' => 'Producto terminado registrado correctamente',
                 'estado' => 201
             ], 201);
         } catch (Exception $e){
+            DB::rollBack();
             return response()->json([
                 'mensaje' => 'Error al registrar el producto terminado',
                 'error' => $e->getMessage(),

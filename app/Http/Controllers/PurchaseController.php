@@ -3,19 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Purchase;
-use App\Repository\DetailsPurchaseRepository;
-use App\Repository\EntryProductRepository;
-use App\Repository\PurchaseRepository;
-use App\Rules\Purchase\ValidateTypeProduct;
-use App\Services\EntryProductService;
-use App\Services\InventoryService;
 use Exception;
 use App\Http\Resources\Purchase\PurchaseCleanResource;
 use App\Http\Requests\Purchase\StorePurchaseRequest;
 use App\Services\DetailsPurchaseService;
 use App\Services\PurchaseService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseController extends Controller
 {
@@ -70,6 +63,7 @@ class PurchaseController extends Controller
     public function store(StorePurchaseRequest $request)
     {
         try{
+            DB::beginTransaction();
             $data_detailsPurchase = $request->json()->all();
             $DetailsPurchaseService = new DetailsPurchaseService();
             $validate = $DetailsPurchaseService->ValidateData($data_detailsPurchase);
@@ -85,6 +79,7 @@ class PurchaseController extends Controller
             $PurchaseService = new PurchaseService();
             $purchase_new = $PurchaseService->create($request, $data_detailsPurchase);
             $PurchaseService->insertDetailsPurchase($data_detailsPurchase, $request);
+            DB::commit();
 
             return response()->json([
                 'purchase' => new PurchaseCleanResource($purchase_new),
@@ -92,6 +87,7 @@ class PurchaseController extends Controller
                 'estado' => 200
             ], 200);
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => 'Error al crear la compra',
                 'error' => $e->getMessage(),
