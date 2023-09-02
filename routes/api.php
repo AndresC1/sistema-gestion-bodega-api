@@ -171,5 +171,6 @@ Route::prefix('v1')->group(function () {
             Route::post('/sale', [SaleController::class, "store"]);
         });
         Route::get('/list_measurements', [ConverterController::class, "list_units"]);
+        Route::get('/list_type_measurements', [ConverterController::class, "list_types_measurements"]);
     });
 });
