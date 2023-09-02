@@ -1,0 +1,32 @@
+name: Ejecutar Tests Laravel
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código fuente
+        uses: actions/checkout@v2
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0' # Cambia la versión de PHP según tus requerimientos
+
+      - name: Instalar dependencias
+        run: composer install
+
+      - name: Copiar archivo .env
+        run: cp .env.example .env
+
+      - name: Generar clave de aplicación
+        run: php artisan key:generate
+
+      - name: Ejecutar tests
+        run: php artisan make:test Converter\ConverterUnitTest --unit
