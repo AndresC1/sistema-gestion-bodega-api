@@ -25,8 +25,8 @@ class CreateUserTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('POST', '/api/v1/auth/register', $this->data_new_user);
 
@@ -45,8 +45,8 @@ class CreateUserTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME_ADMIN'),
-                'password' => getenv('TEST_PASSWORD_ADMIN'),
+                'username' => config('app_settings.TEST_USERNAME_ADMIN'),
+                'password' => config('app_settings.TEST_PASSWORD_ADMIN')
             ]),
         ])->json('POST', '/api/v1/auth/register', $this->data_new_user);
 
@@ -60,8 +60,8 @@ class CreateUserTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME_ADMIN'),
-                'password' => getenv('TEST_PASSWORD_ADMIN'),
+                'username' => config('app_settings.TEST_USERNAME_ADMIN'),
+                'password' => config('app_settings.TEST_PASSWORD_ADMIN')
             ]),
         ])->json('POST', '/api/v1/auth/register', [
             'name' => $this->data_new_user['name'],
@@ -86,8 +86,8 @@ class CreateUserTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME_ADMIN'),
-                'password' => getenv('TEST_PASSWORD_ADMIN'),
+                'username' => config('app_settings.TEST_USERNAME_ADMIN'),
+                'password' => config('app_settings.TEST_PASSWORD_ADMIN')
             ]),
         ])->json('POST', '/api/v1/auth/register', [
             'name' => $this->data_new_user['name'],
@@ -106,8 +106,8 @@ class CreateUserTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('POST', '/api/v1/auth/register', [
             'name' => $this->data_new_user['name'],

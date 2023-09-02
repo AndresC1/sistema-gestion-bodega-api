@@ -18,14 +18,14 @@ class ChangePasswordTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('POST', '/api/v1/user/change_password', [
             'password' => $this->new_password,
-            'old_password' => getenv('TEST_PASSWORD'),
+            'old_password' => config('app_settings.TEST_PASSWORD'),
         ]);
-        $user = User::where('username', getenv('TEST_USERNAME'))->first();
+        $user = User::where('username', config('app_settings.TEST_USERNAME'))->first();
         $this->assertTrue(Hash::check($this->new_password, $user->password));
         $this->assertEquals(1, $user->verification_password);
         $response->assertStatus(200);
@@ -35,8 +35,8 @@ class ChangePasswordTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('POST', '/api/v1/user/change_password', [
             'password' => getenv('TEST_PASSWORD'),
@@ -49,8 +49,8 @@ class ChangePasswordTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('POST', '/api/v1/user/change_password', [
             'password' => $this->new_password,

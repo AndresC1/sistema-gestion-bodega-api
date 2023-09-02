@@ -18,8 +18,8 @@ class UpdateDataTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('PATCH', '/api/v1/user', [
             'name' => $this->new_name,
@@ -36,8 +36,8 @@ class UpdateDataTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('PATCH', '/api/v1/user', [
             'name' => $this->new_name,
@@ -50,8 +50,8 @@ class UpdateDataTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('PATCH', '/api/v1/user', [
             'email' => $this->new_email,
@@ -65,8 +65,8 @@ class UpdateDataTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('PATCH', '/api/v1/user', [
             'name' => $this->new_name,
