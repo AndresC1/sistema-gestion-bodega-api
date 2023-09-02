@@ -15,7 +15,7 @@ return [
 
     'TEST_NAME_GUEST' => env('TEST_NAME_GUEST'),
     'TEST_USERNAME_GUEST' => env('TEST_USERNAME_GUEST'),
-    'TEST_PASSWORD_GUEST' => 'password',
+    'TEST_PASSWORD_GUEST' => 'Test1331',
     'TEST_EMAIL_GUEST' => env('TEST_EMAIL_GUEST'),
     'TEST_ROLE_ID_GUEST' => env('TEST_ROLE_ID_GUEST'),
 ];
