@@ -29,8 +29,8 @@ class UpdateOrganizationsByIdTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('PATCH', '/api/v1/organization/'.$this->organizationId, $this->dataOrganization);
 
@@ -52,8 +52,8 @@ class UpdateOrganizationsByIdTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME_ADMIN'),
-                'password' => getenv('TEST_PASSWORD_ADMIN'),
+                'username' => config('app_settings.TEST_USERNAME_ADMIN'),
+                'password' => config('app_settings.TEST_PASSWORD_ADMIN')
             ]),
         ])->json('PATCH', '/api/v1/organization/'.$this->organizationId, $this->dataOrganization);
 
@@ -66,8 +66,8 @@ class UpdateOrganizationsByIdTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('PATCH', '/api/v1/organization/'.$this->organizationId, [
             'name' => $organization[0]->name,
@@ -82,8 +82,8 @@ class UpdateOrganizationsByIdTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('PATCH', '/api/v1/organization/'.$this->organizationId, [
             'ruc' => $this->dataOrganization["ruc"],
@@ -102,14 +102,14 @@ class UpdateOrganizationsByIdTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$this->getTokenUser([
-                'username' => getenv('TEST_USERNAME'),
-                'password' => getenv('TEST_PASSWORD'),
+                'username' => config('app_settings.TEST_USERNAME'),
+                'password' => config('app_settings.TEST_PASSWORD')
             ]),
         ])->json('PATCH', '/api/v1/organization/'.$this->organizationId, [
             'phone_main' => $this->dataOrganization["phone_main"],
             'phone_secondary' => $this->dataOrganization["phone_main"],
         ]);
-        
+
         $response->assertStatus(422);
     }
 }

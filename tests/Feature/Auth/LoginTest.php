@@ -11,14 +11,14 @@ use Tests\TestCase;
 class LoginTest extends TestCase
 {
     use DatabaseTransactions;
-    
+
     public function test_role_superadmin_and_get_token(): void
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json',
         ])->json('POST', '/api/v1/auth/login', [
-            'username' => getenv('TEST_USERNAME'),
-            'password' => getenv('TEST_PASSWORD'),
+            'username' => config('app_settings.TEST_USERNAME'),
+            'password' => config('app_settings.TEST_PASSWORD')
         ]);
         $response->assertStatus(201);
     }
@@ -28,7 +28,7 @@ class LoginTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
         ])->json('POST', '/api/v1/auth/login', [
-            'password' => getenv('TEST_PASSWORD'),
+            'password' => config('app_settings.TEST_PASSWORD')
         ]);
         $response->assertStatus(404);
     }
@@ -38,7 +38,7 @@ class LoginTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
         ])->json('POST', '/api/v1/auth/login', [
-            'username' => getenv('TEST_USERNAME'),
+            'username' => config('app_settings.TEST_USERNAME'),
         ]);
         $response->assertStatus(422);
     }
