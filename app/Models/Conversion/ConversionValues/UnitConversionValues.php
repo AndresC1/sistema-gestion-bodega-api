@@ -25,7 +25,7 @@ class UnitConversionValues
         ],
         'md' =>[
             'md' => 1,
-            'uni' => 12,
+            'uni' => 6,
             'd' => 0.5,
             'par' => 3,
         ]
