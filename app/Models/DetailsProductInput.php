@@ -16,6 +16,7 @@ class DetailsProductInput extends Model
         'price',
         'total',
         'description',
+        'organization_id'
     ];
 
     public function detailsPurchase()

@@ -18,6 +18,7 @@ class DetailsEntryProductService
     {
         $this->detailsEntryProductRepository->create([
             'details_purchase_id' => $detail_purchase_id,
+            'organization_id' => auth()->user()->organization->id,
             'product_input_id' => $entry_product_id,
             'quantity' => $quantity,
             'price' => $price,
