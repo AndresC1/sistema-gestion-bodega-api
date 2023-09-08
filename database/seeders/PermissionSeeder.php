@@ -49,6 +49,8 @@ class PermissionSeeder extends Seeder
             ["name" => "add_inventory", "description" =>"Registro producto al inventario de la organizacion"],
             ["name" => "register_finished_product", "description" =>"Registro de producto terminado en el inventario"],
             ["name" => "register_sale", "description" =>"Registro de ventas en la organizacion"],
+            ["name" => "export_database_for_organization", "description" =>"Exportar base de datos de una organizacion"],
+            ["name" => "export_database_global", "description" =>"Exportar base de datos del sistema"],
             // ["name" => "", "description" =>""],
         ];
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
