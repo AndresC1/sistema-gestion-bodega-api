@@ -16,6 +16,7 @@ use App\Http\Controllers\ProductInputController;
 use App\Http\Controllers\DetailsPurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\Conversion\ConverterController;
+use App\Http\Controllers\ExportSQL\ExportSQLController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -173,5 +174,12 @@ Route::prefix('v1')->group(function () {
         Route::get('/list_measurements', [ConverterController::class, "list_units"]);
         Route::get('/list_type_measurements', [ConverterController::class, "list_types_measurements"]);
         Route::get('/converter', [ConverterController::class, "converter"]);
+        // Exportar SQL
+        Route::middleware('check_permission:export_database_for_organization')->group(function () {
+            Route::get('/export_sql/{organization}', [ExportSQLController::class, "exportSQLForOrganizations"]);
+        });
+        Route::middleware('check_permission:export_database_global')->group(function () {
+            Route::get('/export_sql', [ExportSQLController::class, "exportSQLGlobal"]);
+        });
     });
 });
