@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Inventory\SearchInventoryRequest;
 use App\Http\Requests\Inventory\TypeInventoryRequest;
 use App\Http\Resources\Inventory\DataMinStockResource;
 use App\Models\Inventory;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Inventory\InventoryCleanResource;
 use App\Http\Requests\Inventory\StoreInventoryRequest;
@@ -158,6 +160,31 @@ class InventoryController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al obtener lista de productos con stock minimo',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+
+    public function search_for_product(SearchInventoryRequest $request){
+        try {
+            $request->validated();
+            $product_search = Product::where('name', 'like', '%'.$request->product_name.'%')
+                ->get();
+            $product_id = $product_search->pluck('id');
+            $inventory = Inventory::whereIn('product_id', $product_id)
+                ->where('organization_id', auth()->user()->organization->id)
+                ->where('type', $request->type)
+                ->limit(10)
+                ->get();
+            return response()->json([
+                'busqueda' => InventoryCleanResource::collection($inventory),
+                'mensaje' => 'Busqueda de productos en el inventario obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al buscar producto en el inventario',
                 'error' => $e->getMessage(),
                 'estado' => 500
             ], 500);

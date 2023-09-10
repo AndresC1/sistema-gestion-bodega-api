@@ -144,8 +144,9 @@ Route::prefix('v1')->group(function () {
         // Inventarios
         Route::middleware('check_permission:view_inventory')->group(function () {
             Route::apiResource('/inventory', InventoryController::class)->only(['index', 'show']);
-            Route::prefix('inventario')->group(function () {
-                Route::get('/min-stock', [InventoryController::class, "list_min_stock"]);
+            Route::prefix('inventory')->group(function () {
+                Route::get('/stock/min', [InventoryController::class, "list_min_stock"]);
+                Route::get('/search/product', [InventoryController::class, "search_for_product"]);
             });
         });
         Route::middleware('check_permission:add_inventory')->group(function () {
