@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MultiplesSheet;
 use App\Http\Requests\Inventory\SearchInventoryRequest;
 use App\Http\Requests\Inventory\TypeInventoryRequest;
 use App\Http\Resources\Inventory\DataMinStockResource;
@@ -12,6 +13,10 @@ use App\Http\Resources\Inventory\InventoryCleanResource;
 use App\Http\Requests\Inventory\StoreInventoryRequest;
 use App\Http\Resources\Inventory\InventoryResource;
 use Exception;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpParser\Parser\Multiple;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
 {
@@ -189,5 +194,11 @@ class InventoryController extends Controller
                 'estado' => 500
             ], 500);
         }
+    }
+    public function export($id_organizacion,$anio,$tipo) 
+    {
+       
+            return (new MultiplesSheet($id_organizacion,$anio,$tipo))->download('inventario-Report.xlsx');
+        
     }
 }

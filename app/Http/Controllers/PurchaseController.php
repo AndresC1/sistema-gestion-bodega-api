@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SheetsPurchase;
 use App\Models\Purchase;
 use Exception;
 use App\Http\Resources\Purchase\PurchaseCleanResource;
@@ -9,6 +10,9 @@ use App\Http\Requests\Purchase\StorePurchaseRequest;
 use App\Services\DetailsPurchaseService;
 use App\Services\PurchaseService;
 use Illuminate\Support\Facades\DB;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpParser\Parser\Multiple;
 
 class PurchaseController extends Controller
 {
@@ -126,5 +130,12 @@ class PurchaseController extends Controller
     public function destroy(Purchase $purchase)
     {
         //
+    }
+
+    public function export($id_organizacion,$anio) 
+    {
+       
+            return (new SheetsPurchase($id_organizacion,$anio))->download('compra-Report.xlsx');
+        
     }
 }

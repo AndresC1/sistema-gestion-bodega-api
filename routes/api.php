@@ -17,6 +17,7 @@ use App\Http\Controllers\DetailsPurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\Conversion\ConverterController;
 use App\Http\Controllers\ExportSQL\ExportSQLController;
+use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,9 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:change_status_by_user', 'check_role_super_admin', 'match_organization', 'check_different_role')->group(function () {
             Route::patch('/user/{user}/change_status', [UserController::class, "change_status"]);
         });
+        
+       
+
             // Lista de usuarios del sistema
         Route::middleware('check_permission:view_list_user')->group(function () {
             Route::get('/users', [UserController::class, "index"]);
@@ -147,7 +151,10 @@ Route::prefix('v1')->group(function () {
             Route::prefix('inventory')->group(function () {
                 Route::get('/stock/min', [InventoryController::class, "list_min_stock"]);
                 Route::get('/search/product', [InventoryController::class, "search_for_product"]);
+                
             });
+           
+            
         });
         Route::middleware('check_permission:add_inventory')->group(function () {
             Route::post('/inventory', [InventoryController::class, "store"]);
@@ -182,5 +189,11 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:export_database_global')->group(function () {
             Route::get('/export_sql', [ExportSQLController::class, "exportSQLGlobal"]);
         });
+
+        //exportar
+         // aqui va de colado el exportar
+        Route::get('inventory/export/{id_organizacion}/{anio}/{tipo}', [InventoryController::class, 'export']);
+        Route::get('purchase/export/{id_organizacion}/{anio}', [PurchaseController::class, 'export']);
+        Route::get('sales/export/{id_organizacion}/{anio}', [SaleController::class, 'export']);
     });
 });

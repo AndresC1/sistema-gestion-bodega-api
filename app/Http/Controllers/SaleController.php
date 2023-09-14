@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SheetsSales;
 use App\Http\Resources\Sale\SaleCleanResource;
 use App\Models\Sale;
 use App\Http\Requests\Sale\StoreSaleRequest;
@@ -9,6 +10,8 @@ use App\Http\Requests\UpdateSaleRequest;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Services\SaleService;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SaleController extends Controller
 {
@@ -91,5 +94,11 @@ class SaleController extends Controller
     public function destroy(Sale $sale)
     {
         //
+    }
+    public function export($id_organizacion,$anio) 
+    {
+       
+            return (new SheetsSales($id_organizacion,$anio))->download('Venta-Report.xlsx');
+        
     }
 }
