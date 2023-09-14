@@ -39,8 +39,9 @@ class PurchaseExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadin
         ->join('users', 'purchases.user_id', '=', 'users.id')
         ->join('organizations', 'purchases.organization_id', '=', 'organizations.id')
         ->join('providers', 'purchases.provider_id', '=', 'providers.id')
-        ->whereYear('details_purchases.created_at', $this->year)
-        ->whereMonth('details_purchases.created_at', $this->month)
+        ->where('purchases.organization_id', $this->id_organizacion)
+        ->whereYear('purchases.created_at', $this->year)
+        ->whereMonth('purchases.created_at', $this->month)
         ->select(
             'purchases.number_bill',
             'products.name as nombre_producto',

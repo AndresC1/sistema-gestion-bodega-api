@@ -38,6 +38,9 @@ class SalesExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadings,
         ->join('clients', 'sales.client_id', '=', 'clients.id')
         ->join('users', 'sales.user_id', '=', 'users.id')
         ->join('organizations', 'sales.organization_id', '=', 'organizations.id')
+        ->where('Sales.organization_id', $this->id_organizacion)
+        ->whereYear('sales.created_at', $this->year)
+        ->whereMonth('sales.created_at', $this->month)
         ->select(
             'sales.number_bill as Número de Factura',
             'clients.name as Cliente',
