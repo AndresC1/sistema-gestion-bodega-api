@@ -17,6 +17,7 @@ use App\Http\Controllers\DetailsPurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\Conversion\ConverterController;
 use App\Http\Controllers\ExportSQL\ExportSQLController;
+use App\Http\Controllers\Earning\EarningsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -181,6 +182,9 @@ Route::prefix('v1')->group(function () {
         });
         Route::middleware('check_permission:export_database_global')->group(function () {
             Route::get('/export_sql', [ExportSQLController::class, "exportSQLGlobal"]);
+        });
+        Route::middleware('check_permission:see_earnings_of_my_organization')->group(function () {
+            Route::get('/earnings_total', [EarningsController::class, "short_term_profits"]);
         });
     });
 });
