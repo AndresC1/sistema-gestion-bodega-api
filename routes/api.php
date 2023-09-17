@@ -185,6 +185,7 @@ Route::prefix('v1')->group(function () {
         });
         Route::middleware('check_permission:see_earnings_of_my_organization')->group(function () {
             Route::get('/earnings_total', [EarningsController::class, "short_term_profits"]);
+            Route::get('/earnings_last_year', [EarningsController::class, "calculate_earnings_last_year"]);
         });
     });
 });

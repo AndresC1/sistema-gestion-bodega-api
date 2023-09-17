@@ -19,4 +19,11 @@ class CalculateEarnings
             'last_month' => $last_month
         ];
     }
+
+    public function calculateEarningsLastYear(){
+        $earnings_last_year = new EarningsForMonth();
+        $earnings_last_year = $earnings_last_year->calculate();
+
+        return $earnings_last_year;
+    }
 }
