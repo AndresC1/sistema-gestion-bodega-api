@@ -4,16 +4,19 @@ namespace App\Http\Controllers\Earning;
 
 use App\Http\Controllers\Controller;
 use App\Services\Earnings\CalculateEarnings;
-use App\Services\Earnings\EarningsDays;
-use Illuminate\Http\Request;
 use Mockery\Exception;
 
 class EarningsController extends Controller
 {
+    private $calculateEarnings;
+
+    public function __construct()
+    {
+        $this->calculateEarnings = new CalculateEarnings();
+    }
     public function short_term_profits(){
         try {
-            $calculateEarnings = new CalculateEarnings();
-            $earnings = $calculateEarnings->calculateEarnings();
+            $earnings = $this->calculateEarnings->calculateEarnings();
             $earnings_today = $earnings['today'];
             $earnings_last_week = $earnings['last_week'];
             $earnings_last_month = $earnings['last_month'];
@@ -48,6 +51,25 @@ class EarningsController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al obtener los datos',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+
+    public function calculate_earnings_last_year()
+    {
+        try {
+            $earnings_last_year = $this->calculateEarnings->calculateEarningsLastYear();
+
+            return response()->json([
+                'data' => $earnings_last_year,
+                'mensaje' => 'Ganancias de los últimos 12 meses',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e){
+            return response()->json([
+                'mensaje' => 'Error al calcular las ganancias de los últimos 12 meses',
                 'error' => $e->getMessage(),
                 'estado' => 500
             ], 500);

@@ -3,8 +3,10 @@
 namespace Tests\Feature\Earnings;
 
 use App\Services\Earnings\EarningsDays;
+use App\Services\Earnings\EarningsForMonth;
 use App\Services\Earnings\EarningsLastWeek;
 use App\Services\Earnings\EarningsMonth;
+use Carbon\Carbon;
 use Database\Factories\OrganizationFactory;
 use Database\Factories\SaleFactory;
 use Database\Factories\UserFactory;
@@ -22,6 +24,7 @@ class EarningsTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Carbon::setTestNow(Carbon::create(2023, 9, 16, 0, 0, 0));
         $this->organization_new = OrganizationFactory::new()->create();
         $this->client_new = UserFactory::new()->create();
         $this->user_new = UserFactory::new()->create();
@@ -51,6 +54,8 @@ class EarningsTest extends TestCase
         $this->createSale(now('America/Managua')->subDays(8)->format('Y-m-d'), 'TEST-0004', 200, 100);
         $this->createSale(now('America/Managua')->subDays(29)->format('Y-m-d'), 'TEST-0005', 200, 100);
         $this->createSale(now('America/Managua')->subDays(31)->format('Y-m-d'), 'TEST-0006', 200, 100);
+        $this->createSale(now('America/Managua')->subDays(62)->format('Y-m-d'), 'TEST-0006', 200, 100);
+        $this->createSale(now('America/Managua')->subDays(362)->format('Y-m-d'), 'TEST-0006', 200, 100);
     }
 
     /**
@@ -87,5 +92,27 @@ class EarningsTest extends TestCase
 
         $this->assertEquals($earnings_last_30_days['earnings_total'], 500);
         $this->assertEquals($earnings_last_30_days['sales_total'], 5);
+    }
+
+    /**
+     * @test
+     */
+    public function earnings_last_12_months(): void
+    {
+        $earningsLastYear = new EarningsForMonth();
+        $earnings = $earningsLastYear->calculate();
+
+        // September 2022
+        $this->assertEquals($earnings[0]['mes'], 'September');
+        $this->assertEquals($earnings[0]['year'], 2022);
+        $this->assertEquals($earnings[0]['total'], '100.00');
+        // July 2023
+        $this->assertEquals($earnings[1]['mes'], 'July');
+        $this->assertEquals($earnings[1]['year'], 2023);
+        $this->assertEquals($earnings[1]['total'], '100.00');
+        // August 2023
+        $this->assertEquals($earnings[2]['mes'], 'August');
+        $this->assertEquals($earnings[2]['year'], 2023);
+        $this->assertEquals($earnings[2]['total'], '200.00');
     }
 }
