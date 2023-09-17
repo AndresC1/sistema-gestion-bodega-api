@@ -1,4 +1,4 @@
-name: Ejecutar Tests de conversiones
+name: Ejecutar Tests de ganancias
 
 on:
   push:
