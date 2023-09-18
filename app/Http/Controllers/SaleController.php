@@ -10,8 +10,6 @@ use App\Http\Requests\UpdateSaleRequest;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Services\SaleService;
-use App\Exports\UsersExport;
-use Maatwebsite\Excel\Facades\Excel;
 
 class SaleController extends Controller
 {
@@ -95,10 +93,5 @@ class SaleController extends Controller
     {
         //
     }
-    public function export($id_organizacion,$anio) 
-    {
-       
-            return (new SheetsSales($id_organizacion,$anio))->download('Venta-Report.xlsx');
-        
-    }
+   
 }

@@ -5,7 +5,6 @@ namespace App\Exports;
 use App\Models\Inventory;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -15,18 +14,13 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 
 
-class inventoryExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell
+class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle
 {
-    private $month;
-    private $year;
-    private $id_organizacion;
-    private $tipo;
-    public function __construct(int $year, int $month, int $id_organizacion, String $tipo)
+    private $data;
+
+    public function __construct($data)
     {
-        $this->month = $month;
-        $this->year  = $year;
-        $this->id_organizacion = $id_organizacion;
-        $this->tipo = $tipo;
+        $this->data = $data;
     }
     public function startCell(): string
     {
@@ -35,16 +29,13 @@ class inventoryExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadi
     public function query()
     {
 
-        
-
         return Inventory::query()
         ->join('products', 'inventories.product_id', '=', 'products.id')
-        ->where('inventories.organization_id', $this->id_organizacion)
-        ->where('inventories.type', $this->tipo)
-        ->whereYear('inventories.created_at', $this->year)
-        ->whereMonth('inventories.created_at', $this->month)
+        ->where('inventories.organization_id', $this->data[0])
+        ->where('inventories.type', 'MP')
+        ->whereBetween('inventories.created_at', [$this->data[2], $this->data[3]])
         ->select(
-            'products.name as product_name', // Selección del nombre del producto
+            'products.name as product_name', 
             'inventories.type',
             'inventories.stock',
             'inventories.stock_min',
@@ -55,15 +46,11 @@ class inventoryExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadi
             'inventories.note',
             'inventories.status',
             'inventories.total_value',
-            'inventories.code'
         );
 
     }
     
-    public function title(): string
-    {
-        return Carbon::parse("{$this->year}-{$this->month}-01")->format('F-Y');
-    }
+
     public function headings(): array
     {
         return [
@@ -78,24 +65,27 @@ class inventoryExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadi
             'Nota',
             'Estado',
             'Valor Total',
-            'Código'
         ];
+    }
+    public function title(): string
+    {
+        return 'Inventario MP'; // Asigna un nombre diferente para esta hoja
     }
     
     public function styles(Worksheet $sheet)
     {
-        $sheet->setCellValue('A1', 'NOMBRE DE LA EMPRESA');
-        $sheet->setCellValue('A2', 'Reporte de Inventario');
+        $sheet->setCellValue('A1', $this->data[1]);
+        $sheet->setCellValue('A2', 'Reporte de Inventario de Materia Prima');
 
          // Aplicar alineación derecha a todas las columnas, excepto la columna A y la columna I=> era la de las notas
         $sheet->getStyle('B:H')->applyFromArray([
             'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_RIGHT,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
             ],
         ]);
         $sheet->getStyle('J:ZZ')->applyFromArray([
             'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_RIGHT,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
             ],
             
         ]);

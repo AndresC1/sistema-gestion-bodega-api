@@ -17,6 +17,7 @@ use App\Http\Controllers\DetailsPurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\Conversion\ConverterController;
 use App\Http\Controllers\ExportSQL\ExportSQLController;
+use App\Http\Controllers\ExportarExcel\ExportController;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -192,8 +193,9 @@ Route::prefix('v1')->group(function () {
 
         //exportar
          // aqui va de colado el exportar
-        Route::get('inventory/export/{id_organizacion}/{anio}/{tipo}', [InventoryController::class, 'export']);
-        Route::get('purchase/export/{id_organizacion}/{anio}', [PurchaseController::class, 'export']);
-        Route::get('sales/export/{id_organizacion}/{anio}', [SaleController::class, 'export']);
+        Route::get('inventory/export/{anio}/{tipo}', [ExportController::class, 'ExportInventory']);
+        Route::get('purchase/export/{id_organizacion}/{anio}', [ExportController::class, 'ExportPurchase']);
+        Route::get('sales/export/{id_organizacion}/{anio}', [ExportController::class, 'ExportSales']);
+        Route::post('/complete/export', [ExportController::class, 'CompleteExport']);
     });
 });

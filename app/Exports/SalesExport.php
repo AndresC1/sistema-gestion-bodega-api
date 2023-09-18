@@ -6,7 +6,6 @@ use App\Models\Sale;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -16,16 +15,14 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use PhpParser\Node\Stmt\Return_;
 
-class SalesExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell
+class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle
 {
-    private $month;
-    private $year;
-    private $id_organizacion;
-    public function __construct(int $year, int $month, int $id_organizacion)
+
+    private $data;
+
+    public function __construct($data)
     {
-        $this->month = $month;
-        $this->year  = $year;
-        $this->id_organizacion = $id_organizacion;
+        $this->data = $data;
     }
     public function startCell(): string
     {
@@ -34,27 +31,23 @@ class SalesExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadings,
 
     public function query()
     {
+        // salida de producto terminado que ponga la nota
         return Sale::query()
         ->join('clients', 'sales.client_id', '=', 'clients.id')
         ->join('users', 'sales.user_id', '=', 'users.id')
         ->join('organizations', 'sales.organization_id', '=', 'organizations.id')
-        ->where('Sales.organization_id', $this->id_organizacion)
-        ->whereYear('sales.created_at', $this->year)
-        ->whereMonth('sales.created_at', $this->month)
+        ->join('details_sales', 'sales.id', '=', 'details_sales.sale_id')
+        ->where('sales.organization_id', $this->data[0])
+        ->whereBetween('sales.created_at', [$this->data[2], $this->data[3]])
         ->select(
             'sales.number_bill as Número de Factura',
             'clients.name as Cliente',
             'users.name as Usuario',
-            'organizations.name as Organización',
             'sales.date as Fecha',
             'sales.total as Total',
             'sales.earning_total as Ganancia Total',
             'sales.note as Nota'
         );
-    }
-    public function title(): string
-    {
-        return Carbon::parse("{$this->year}-{$this->month}-01")->format('F-Y');
     }
     public function headings(): array
     {
@@ -62,7 +55,6 @@ class SalesExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadings,
             'factura',
             'Nombre Cliente',
             'Usuario',
-            'Organizacion',
             'fecha',
             'total',
             'Ganancia Total',
@@ -70,21 +62,25 @@ class SalesExport implements FromQuery, WithTitle, ShouldAutoSize, WithHeadings,
            
         ];
     }
+    public function title(): string
+    {
+        return 'Ventas'; // Asigna un nombre diferente para esta hoja
+    }
     
     public function styles(Worksheet $sheet)
     {
-        $sheet->setCellValue('A1', 'NOMBRE DE LA EMPRESA');
-        $sheet->setCellValue('A2', 'Reporte de Compra');
+        $sheet->setCellValue('A1', $this->data[1]);
+        $sheet->setCellValue('A2', 'Reporte de Venta');
 
          // Aplicar alineación derecha a todas las columnas, excepto la columna A y la columna I=> era la de las notas
         $sheet->getStyle('B:H')->applyFromArray([
             'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_RIGHT,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
             ],
         ]);
         $sheet->getStyle('J:ZZ')->applyFromArray([
             'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_RIGHT,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
             ],
             
         ]);

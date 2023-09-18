@@ -2,8 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\DetailsPurchase;
-use App\Models\Purchase;
+use App\Models\Inventory;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -14,10 +13,9 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 
-class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle
+class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle
 {
-
-    private $data; 
+    private $data;
 
     public function __construct($data)
     {
@@ -27,56 +25,56 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
     {
         return 'A3';
     }
-
     public function query()
     {
 
-        //nota de entrada materia prima
-        return Purchase::query()
-        ->join('details_purchases', 'purchases.id', '=', 'details_purchases.purchase_id')
-        ->join('products', 'details_purchases.product_id', '=', 'products.id')
-        ->join('users', 'purchases.user_id', '=', 'users.id')
-        ->join('organizations', 'purchases.organization_id', '=', 'organizations.id')
-        ->join('providers', 'purchases.provider_id', '=', 'providers.id')
-        ->where('purchases.organization_id', $this->data[0])
-        ->whereBetween('purchases.created_at', [$this->data[2], $this->data[3]])
+        return Inventory::query()
+        ->join('products', 'inventories.product_id', '=', 'products.id')
+        ->where('inventories.organization_id', $this->data[0])
+        ->where('inventories.type', 'PT')
+        ->whereBetween('inventories.created_at', [$this->data[2], $this->data[3]])
         ->select(
-            'purchases.number_bill',
-            'products.name as nombre_producto',
-            'organizations.name as nombre_organizacion',
-            'providers.name as nombre_proveedor',
-            'users.name as nombre_usuario',
-            'purchases.date',
-            'purchases.total',
-            'details_purchases.quantity',
-            'details_purchases.price',
-            
+            'products.name as product_name', // Selección del nombre del producto
+            'inventories.type',
+            'inventories.stock',
+            'inventories.stock_min',
+            'inventories.unit_of_measurement',
+            'inventories.location',
+            'inventories.date_last_modified',
+            'inventories.lot_number',
+            'inventories.note',
+            'inventories.status',
+            'inventories.total_value',
         );
+
     }
+    
 
     public function headings(): array
     {
         return [
-            'factura',
-            'producto',
-            'organizacion',
-            'proveedor',
-            'nombre usuario',
-            'fecha',
-            'total',
-            'cantidad',
-            'precio',
-           
+            'Producto',
+            'Tipo',
+            'Stock',
+            'Stock Mínimo',
+            'Unidad de Medida',
+            'Ubicación',
+            'Fecha de Modificación',
+            'Número de Lote',
+            'Nota',
+            'Estado',
+            'Valor Total',
         ];
     }
     public function title(): string
     {
-        return 'Compras'; // Asigna un nombre diferente para esta hoja
+        return 'Inventario PT'; // Asigna un nombre diferente para esta hoja
     }
+    
     public function styles(Worksheet $sheet)
     {
         $sheet->setCellValue('A1', $this->data[1]);
-        $sheet->setCellValue('A2', 'Reporte de Compra');
+        $sheet->setCellValue('A2', 'Reporte de Inventario de Productos Terminado');
 
          // Aplicar alineación derecha a todas las columnas, excepto la columna A y la columna I=> era la de las notas
         $sheet->getStyle('B:H')->applyFromArray([
@@ -135,5 +133,7 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
                 'bold' => true,
             ],
         ]);
+
+       
     }
 }
