@@ -192,10 +192,6 @@ Route::prefix('v1')->group(function () {
         });
 
         //exportar
-         // aqui va de colado el exportar
-        Route::get('inventory/export/{anio}/{tipo}', [ExportController::class, 'ExportInventory']);
-        Route::get('purchase/export/{id_organizacion}/{anio}', [ExportController::class, 'ExportPurchase']);
-        Route::get('sales/export/{id_organizacion}/{anio}', [ExportController::class, 'ExportSales']);
         Route::post('/complete/export', [ExportController::class, 'CompleteExport']);
     });
 });
