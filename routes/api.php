@@ -19,6 +19,7 @@ use App\Http\Controllers\Conversion\ConverterController;
 use App\Http\Controllers\ExportSQL\ExportSQLController;
 use App\Http\Controllers\ExportarExcel\ExportController;
 use App\Models\Purchase;
+use App\Http\Controllers\Earning\EarningsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -193,5 +194,9 @@ Route::prefix('v1')->group(function () {
 
         //exportar
         Route::post('/complete/export', [ExportController::class, 'CompleteExport']);
+        Route::middleware('check_permission:see_earnings_of_my_organization')->group(function () {
+            Route::get('/earnings_total', [EarningsController::class, "short_term_profits"]);
+            Route::get('/earnings_last_year', [EarningsController::class, "calculate_earnings_last_year"]);
+        });
     });
 });

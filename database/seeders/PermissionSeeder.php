@@ -51,6 +51,7 @@ class PermissionSeeder extends Seeder
             ["name" => "register_sale", "description" =>"Registro de ventas en la organizacion"],
             ["name" => "export_database_for_organization", "description" =>"Exportar base de datos de una organizacion"],
             ["name" => "export_database_global", "description" =>"Exportar base de datos del sistema"],
+            ["name" => "see_earnings_of_my_organization", "description" =>"Ver ganancias de mi organizacion"],
             // ["name" => "", "description" =>""],
         ];
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');

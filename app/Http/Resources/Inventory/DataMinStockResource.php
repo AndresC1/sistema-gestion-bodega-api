@@ -16,7 +16,8 @@ class DataMinStockResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product' => $this->product->name,
+            'type' => $this->type,
+            'product_name' => $this->product->name,
             'stock' => $this->stock,
             'stock_min' => $this->stock_min,
         ];

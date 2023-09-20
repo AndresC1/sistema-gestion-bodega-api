@@ -151,11 +151,8 @@ class InventoryController extends Controller
             $product = Inventory::where('organization_id', auth()->user()->organization->id)
                 ->where('stock', '<=', DB::raw('stock_min'))
                 ->get();
-            $finished_product = $product->where('type', 'PT');
-            $raw_material = $product->where('type', 'MP');
             return response()->json([
-                'productos_terminados' => DataMinStockResource::collection($finished_product),
-                'materia_prima' => DataMinStockResource::collection($raw_material),
+                'inventario_stock_min' => DataMinStockResource::collection($product),
                 'mensaje' => 'Inventario de productos con stock minimo obtenido correctamente',
                 'estado' => 200
             ], 200);
