@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SheetsSales;
 use App\Http\Resources\Sale\SaleCleanResource;
 use App\Models\Sale;
 use App\Http\Requests\Sale\StoreSaleRequest;
@@ -92,4 +93,5 @@ class SaleController extends Controller
     {
         //
     }
+   
 }

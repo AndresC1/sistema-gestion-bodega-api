@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PurchaseExport;
+use App\Exports\SheetsPurchase;
 use App\Models\DetailsPurchase;
 use App\Http\Requests\DetailsPurchase\ListDetailsPurchaseRequest;
 use App\Http\Resources\DetailsPurchaseCleanResource;
@@ -92,4 +94,6 @@ class DetailsPurchaseController extends Controller
     {
         //
     }
+
+   
 }

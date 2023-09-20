@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MultiplesSheet;
 use App\Http\Requests\Inventory\SearchInventoryRequest;
 use App\Http\Requests\Inventory\TypeInventoryRequest;
 use App\Http\Resources\Inventory\DataMinStockResource;
@@ -12,6 +13,7 @@ use App\Http\Resources\Inventory\InventoryCleanResource;
 use App\Http\Requests\Inventory\StoreInventoryRequest;
 use App\Http\Resources\Inventory\InventoryResource;
 use Exception;
+
 
 class InventoryController extends Controller
 {
@@ -187,4 +189,5 @@ class InventoryController extends Controller
             ], 500);
         }
     }
+    
 }

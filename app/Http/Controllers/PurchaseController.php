@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SheetsPurchase;
 use App\Models\Purchase;
 use Exception;
 use App\Http\Resources\Purchase\PurchaseCleanResource;
@@ -9,6 +10,7 @@ use App\Http\Requests\Purchase\StorePurchaseRequest;
 use App\Services\DetailsPurchaseService;
 use App\Services\PurchaseService;
 use Illuminate\Support\Facades\DB;
+
 
 class PurchaseController extends Controller
 {
@@ -127,4 +129,6 @@ class PurchaseController extends Controller
     {
         //
     }
+
+   
 }
