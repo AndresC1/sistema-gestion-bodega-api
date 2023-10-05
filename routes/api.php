@@ -153,7 +153,7 @@ Route::prefix('v1')->group(function () {
             Route::prefix('inventory')->group(function () {
                 Route::get('/stock/min', [InventoryController::class, "list_min_stock"]);
                 Route::get('/search/product', [InventoryController::class, "search_for_product"]);
-
+                Route::get('/MP/list', [InventoryController::class, "list_product_in_MP"]);
             });
 
 
