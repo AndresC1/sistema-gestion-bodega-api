@@ -42,8 +42,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:change_status_by_user', 'check_role_super_admin', 'match_organization', 'check_different_role')->group(function () {
             Route::patch('/user/{user}/change_status', [UserController::class, "change_status"]);
         });
-        
-       
+
+
 
             // Lista de usuarios del sistema
         Route::middleware('check_permission:view_list_user')->group(function () {
@@ -145,7 +145,7 @@ Route::prefix('v1')->group(function () {
 
         // Productos
         Route::get('/products/{name}/search', [ProductController::class, "search"]);
-        Route::post('/product', [ProductController::class, "store"]);
+        Route::apiResource('/product', ProductController::class)->only(['store', 'show']);
 
         // Inventarios
         Route::middleware('check_permission:view_inventory')->group(function () {
@@ -153,10 +153,10 @@ Route::prefix('v1')->group(function () {
             Route::prefix('inventory')->group(function () {
                 Route::get('/stock/min', [InventoryController::class, "list_min_stock"]);
                 Route::get('/search/product', [InventoryController::class, "search_for_product"]);
-                
+
             });
-           
-            
+
+
         });
         Route::middleware('check_permission:add_inventory')->group(function () {
             Route::post('/inventory', [InventoryController::class, "store"]);

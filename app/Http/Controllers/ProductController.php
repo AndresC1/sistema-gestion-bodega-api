@@ -50,7 +50,17 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        try{
+            return response()->json([
+                'producto' => new ProductCleanResource($product)
+            ], 200);
+        } catch (Exception $e){
+            return response()->json([
+                'mensaje' => 'Error al obtener el producto',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**
@@ -80,7 +90,9 @@ class ProductController extends Controller
     public function search(string $name)
     {
         try{
-            $products = Product::where('name', 'like', "%$name%")->get();
+            $products = Product::where('name', 'like', "%$name%")
+                ->orWhere('id', 'like', "%$name%")
+                ->get();
             return response()->json(ProductCleanResource::collection($products), 200);
         } catch(Exception $e){
             return response()->json([
