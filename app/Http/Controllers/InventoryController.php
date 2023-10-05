@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Inventory\InventoryCleanResource;
 use App\Http\Requests\Inventory\StoreInventoryRequest;
 use App\Http\Resources\Inventory\InventoryResource;
+use App\Http\Resources\Inventory\InfoProductResource;
 use Exception;
 
 
@@ -189,5 +190,42 @@ class InventoryController extends Controller
             ], 500);
         }
     }
-    
+
+    public function list_product_in_MP(){
+        try{
+            $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
+                ->where('type', 'MP')
+                ->get();
+            return response()->json([
+                'inventario' => InfoProductResource::collection($inventory),
+                'mensaje' => 'Inventario de productos obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener el inventario',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+
+    public function list_product_in_PT(){
+        try{
+            $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
+                ->where('type', 'PT')
+                ->get();
+            return response()->json([
+                'inventario' => InfoProductResource::collection($inventory),
+                'mensaje' => 'Inventario de productos obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener el inventario',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
 }

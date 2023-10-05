@@ -153,10 +153,9 @@ Route::prefix('v1')->group(function () {
             Route::prefix('inventory')->group(function () {
                 Route::get('/stock/min', [InventoryController::class, "list_min_stock"]);
                 Route::get('/search/product', [InventoryController::class, "search_for_product"]);
-
+                Route::get('/MP/list', [InventoryController::class, "list_product_in_MP"]);
+                Route::get('PT/list', [InventoryController::class, "list_product_in_PT"]);
             });
-
-
         });
         Route::middleware('check_permission:add_inventory')->group(function () {
             Route::post('/inventory', [InventoryController::class, "store"]);
