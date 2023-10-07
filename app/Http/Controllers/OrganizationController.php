@@ -12,6 +12,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class OrganizationController extends Controller
@@ -63,13 +64,20 @@ class OrganizationController extends Controller
     public function store(StoreOrganizationRequest $request)
     {
         try{
+            DB::beginTransaction();
             $organization = Organization::create($request->validated());
+            if($request->hasFile('image')){
+                $organization->image = $request->file('image')->store('public/organizations/'.$organization->name.'/logo', 'public');
+                $organization->save();
+            }
+            DB::commit();
             return response()->json([
                 'organizacion' => new OrganizationResource($organization),
                 'mensaje' => 'Organización creada correctamente',
                 'estado' => 201
             ], 201);
         }catch(Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'mensaje' => 'Error al crear la organización',
                 'error' => $e->getMessage(),

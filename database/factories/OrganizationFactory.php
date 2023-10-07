@@ -35,6 +35,7 @@ class OrganizationFactory extends Factory
             "city_id" => $city->id,
             "phone_main" => '+(505) '.$this->faker->numberBetween(11111111, 99999999),
             "phone_secondary" => '+(505) '.$this->faker->numberBetween(11111111, 99999999),
+            "image" => $this->faker->imageUrl(640, 480, 'business'),
         ];
     }
 }

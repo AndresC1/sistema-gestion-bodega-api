@@ -43,8 +43,6 @@ Route::prefix('v1')->group(function () {
             Route::patch('/user/{user}/change_status', [UserController::class, "change_status"]);
         });
 
-
-
             // Lista de usuarios del sistema
         Route::middleware('check_permission:view_list_user')->group(function () {
             Route::get('/users', [UserController::class, "index"]);

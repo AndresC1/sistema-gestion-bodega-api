@@ -18,6 +18,7 @@ class Organization extends Model
         "city_id",
         "phone_main",
         "phone_secondary",
+        "image",
     ];
 
     public function sector()
