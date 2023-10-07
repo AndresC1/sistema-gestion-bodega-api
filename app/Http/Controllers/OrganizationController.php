@@ -67,7 +67,8 @@ class OrganizationController extends Controller
             DB::beginTransaction();
             $organization = Organization::create($request->validated());
             if($request->hasFile('image')){
-                $organization->image = $request->file('image')->store('public/organizations/'.$organization->name.'/logo', 'public');
+                $url_image = $request->file('image')->store('organizations/'.$organization->name.'/logo', 'public');
+                $organization->image = FacadesRequest::root().'/public/storage/'.$url_image;
                 $organization->save();
             }
             DB::commit();
