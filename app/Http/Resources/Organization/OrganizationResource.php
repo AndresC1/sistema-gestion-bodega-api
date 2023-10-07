@@ -27,6 +27,7 @@ class OrganizationResource extends JsonResource
             "city" => CityResource::make($this->city),
             "phone_main" => $this->phone_main,
             "phone_secondary" => $this->phone_secondary,
+            "image" => $this->image,
         ];
     }
 }

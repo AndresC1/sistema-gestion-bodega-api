@@ -30,6 +30,7 @@ class StoreOrganizationRequest extends FormRequest
             "city_id" => "required|integer|exists:cities,id",
             "phone_main" => "required|string",
             "phone_secondary" => "nullable|string",
+            "image" => "nullable|image|mimes:jpeg,png,jpg,svg|max:2048",
         ];
     }
 
@@ -59,6 +60,9 @@ class StoreOrganizationRequest extends FormRequest
             "municipality_id.required" => "El municipio de la organización es requerido",
             "city_id.required" => "La ciudad de la organización es requerida",
             "phone_main.required" => "El teléfono principal de la organización es requerido",
+            "image.image" => "La imagen de la organización debe ser una imagen",
+            "image.mimes" => "La imagen de la organización debe ser de tipo jpeg, png, jpg o svg",
+            "image.max" => "La imagen de la organización debe pesar máximo 2MB",
         ];
     }
 }
