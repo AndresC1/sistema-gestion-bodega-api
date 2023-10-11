@@ -27,4 +27,10 @@ class InventoryRepository
             'date_last_modified' => now('America/Managua'),
         ]);
     }
+    public function search_inventory_MP($product_id){
+        return auth()->user()->organization->inventories
+            ->where('product_id', $product_id)
+            ->where('type', 'MP')
+            ->first();
+    }
 }

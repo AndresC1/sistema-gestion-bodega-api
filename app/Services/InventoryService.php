@@ -21,4 +21,7 @@ class InventoryService
     {
         $this->inventoryRepository->update_decrease($inventory, $quantity, $total_value);
     }
+    public function search_inventory_MP($product_id){
+        return $this->inventoryRepository->search_inventory_MP($product_id);
+    }
 }

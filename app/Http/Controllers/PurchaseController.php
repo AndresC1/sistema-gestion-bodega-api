@@ -66,9 +66,9 @@ class PurchaseController extends Controller
     {
         try{
             DB::beginTransaction();
-            $data_detailsPurchase = $request->json()->all();
-            $DetailsPurchaseService = new DetailsPurchaseService();
-            $validate = $DetailsPurchaseService->ValidateData($data_detailsPurchase);
+            $request->validated();
+            $purchase_service = new PurchaseService();
+            $validate = $purchase_service->validate_details_purchase($request->json()->all());
             if($validate != null){
                 return response()->json([
                     'message' => 'Error al crear la compra',
@@ -76,13 +76,8 @@ class PurchaseController extends Controller
                     'estado' => 422
                 ], 422);
             }
-            $request->validated();
-
-            $PurchaseService = new PurchaseService();
-            $purchase_new = $PurchaseService->create($request, $data_detailsPurchase);
-            $PurchaseService->insertDetailsPurchase($data_detailsPurchase, $request);
+            $purchase_new = $purchase_service->register($request);
             DB::commit();
-
             return response()->json([
                 'purchase' => new PurchaseCleanResource($purchase_new),
                 'message' => 'Compra creada correctamente',
@@ -130,5 +125,5 @@ class PurchaseController extends Controller
         //
     }
 
-   
+
 }

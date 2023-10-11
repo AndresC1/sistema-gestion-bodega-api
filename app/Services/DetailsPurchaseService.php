@@ -4,11 +4,7 @@ namespace App\Services;
 
 use App\Models\DetailsPurchase;
 use App\Repository\DetailsPurchaseRepository;
-use App\Rules\Purchase\ValidateTypeProduct;
-use Illuminate\Http\Request;
-use Exception;
 use DateTime;
-use Illuminate\Support\Facades\Validator;
 
 class DetailsPurchaseService
 {
@@ -23,12 +19,12 @@ class DetailsPurchaseService
     }
     public function createDetailsPurchase($data){
         foreach ($data['listDetailsPurchase'] as $detailPurchase){
-            $inventory = $this->searchInventory($detailPurchase['product_id']);
-            $total = $this->total($detailPurchase['quantity'], $detailPurchase['price']);
+            $inventory = $this->InventoryService->search_inventory_MP($detailPurchase['product_id']);
+            $total = $detailPurchase['quantity'] * $detailPurchase['price'];
             // creacion de detalle de compra
             $this->store($data['purchase_id'], $inventory->product_id, $detailPurchase);
             // creacion de entrada de producto
-            $this->createEntryProduct(
+            $this->EntryProductService->store(
                 $inventory->id,
                 $detailPurchase['quantity'],
                 $detailPurchase['price'],
@@ -36,7 +32,11 @@ class DetailsPurchaseService
                 "Compra de materia prima a proveedor ".$data['provider'].". Fact No.".$data['number_bill']." el ".now('America/Managua')->format('d-m-Y')."."
             );
             // actualizacion de inventario
-            $this->updateInventory($inventory, $detailPurchase['quantity'], $total);
+            $this->InventoryService->update_increase(
+                $inventory,
+                $detailPurchase['quantity'],
+                $total,
+            );
         }
     }
     protected function store($purchase_id, $product_id, $detailPurchase){
@@ -52,51 +52,6 @@ class DetailsPurchaseService
             'created_at' => new DateTime(),
             'updated_at' => new DateTime(),
         ]);
-    }
-    protected function searchInventory($product_id){
-        return auth()->user()->organization->inventories
-            ->where('product_id', $product_id)
-            ->where('type', 'MP')
-            ->first();
-    }
-    protected function updateInventory($inventory, $quantity, $total){
-        $this->InventoryService->update_increase(
-            $inventory,
-            $quantity,
-            $total,
-        );
-    }
-    protected function createEntryProduct($inventory_id, $quantity, $price, $total, $observation){
-        $this->EntryProductService->store(
-            $inventory_id,
-            $quantity,
-            $price,
-            $total,
-            $observation
-        );
-    }
-    protected function total($quantity, $price){
-        return $quantity * $price;
-    }
-
-    public function ValidateData($data_detailsPurchase){
-        $validator_listDetailsPurchase = Validator::make($data_detailsPurchase, [
-            '*.product_id' => [
-                'required',
-                'numeric',
-                'min:1',
-                'exists:products,id',
-                new ValidateTypeProduct()
-            ],
-            '*.quantity' => 'required|numeric|min:1',
-            '*.price' => 'required|numeric|min:0',
-            '*.observation' => 'nullable|string',
-        ]);
-        if ($validator_listDetailsPurchase->fails()) {
-            return $validator_listDetailsPurchase->errors();
-        }
-        $validator_listDetailsPurchase->validate();
-        return null;
     }
     public function update_disponibility($detailPurchase_id, $quantity){
         $detailPurchase = DetailsPurchase::find($detailPurchase_id);
