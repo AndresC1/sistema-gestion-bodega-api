@@ -29,7 +29,8 @@ class DetailsPurchaseService
                 $detailPurchase['quantity'],
                 $detailPurchase['price'],
                 $total,
-                "Compra de materia prima a proveedor ".$data['provider'].". Fact No.".$data['number_bill']." el ".now('America/Managua')->format('d-m-Y')."."
+                "Compra de materia prima a proveedor ".$data['provider'].". Fact No.".$data['number_bill']." el ".now('America/Managua')->format('d-m-Y').".",
+                $detailPurchase['quantity']
             );
             // actualizacion de inventario
             $this->InventoryService->update_increase(

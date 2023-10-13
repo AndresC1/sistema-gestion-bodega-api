@@ -36,6 +36,8 @@ class StoreSaleRequest extends FormRequest
                 new ValidateNumberBill()
             ],
             'note' => 'nullable|string|max:255',
+            'payment_method' => 'required|string|in:contado,credito',
+            'payment_status' => 'required|string|in:pendiente,cancelado',
         ];
     }
 
@@ -53,6 +55,12 @@ class StoreSaleRequest extends FormRequest
             'number_bill.min' => 'El campo numero de factura debe ser mayor a 0.',
             'note.string' => 'El campo nota debe ser una cadena de caracteres.',
             'note.max' => 'El campo nota debe tener maximo 255 caracteres.',
+            'payment_method.required' => 'El campo metodo de pago es requerido.',
+            'payment_method.string' => 'El campo metodo de pago debe ser una cadena de caracteres.',
+            'payment_method.in' => 'El campo metodo de pago debe ser contado o credito.',
+            'payment_status.required' => 'El campo estado de pago es requerido.',
+            'payment_status.string' => 'El campo estado de pago debe ser una cadena de caracteres.',
+            'payment_status.in' => 'El campo estado de pago debe ser pendiente o cancelado.',
         ];
     }
 }

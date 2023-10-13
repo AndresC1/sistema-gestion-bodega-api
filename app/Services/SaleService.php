@@ -28,6 +28,8 @@ class SaleService
             'total' => 0,
             'earning_total'=> 0,
             'note' => $data['note'],
+            'payment_method' => $data['payment_method'],
+            'payment_status' => $data['payment_status'],
         ]);
     }
     public function create($dataHeader, $dataBody)
