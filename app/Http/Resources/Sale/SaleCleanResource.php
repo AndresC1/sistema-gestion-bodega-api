@@ -22,6 +22,9 @@ class SaleCleanResource extends JsonResource
             'date' => $this->date,
             'total' => $this->total,
             'earning_total' => $this->earning_total,
+            'note' => $this->note,
+            'payment_method' => $this->payment_method,
+            'payment_status' => $this->payment_status,
         ];
     }
 }

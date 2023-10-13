@@ -18,6 +18,8 @@ class Sale extends Model
         'total',
         'earning_total',
         'note',
+        'payment_method',
+        'payment_status',
     ];
 
     public function client()
