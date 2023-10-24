@@ -192,6 +192,15 @@ Route::prefix('v1')->group(function () {
         });
 
         //exportar
-        Route::post('/complete/export', [ExportController::class, 'CompleteExport']);
+        //Route::post('/complete/export', [ExportController::class, 'CompleteExport']);
+        Route::prefix('complete/export')->middleware('validate_date_range')->group(function () {
+            Route::post('/MP', [ExportController::class, 'InventoryMP']);
+            Route::post('/PT', [ExportController::class, 'InventoryPT']);
+            Route::post('/BestSeller', [ExportController::class, 'BestSeller']);
+            Route::post('/Sales', [ExportController::class, 'Sales']);
+            Route::post('/Purchase', [ExportController::class, 'Purchase']);
+            Route::post('/Low', [ExportController::class, 'Low']);
+        });
+
     });
 });

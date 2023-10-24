@@ -78,5 +78,7 @@ class Kernel extends HttpKernel
         'check_different_organization_for_provider' => \App\Http\Middleware\Provider\check_different_organization::class,
         'check_different_organization_for_client' => \App\Http\Middleware\Client\check_different_organization::class,
         'validate_listDetailsPurchase' => \App\Http\Middleware\Purchase\validate_listDetailsPurchase::class,
+        'validate_date_range' => \App\Http\Middleware\ValidateDateRange::class,
+
     ];
 }

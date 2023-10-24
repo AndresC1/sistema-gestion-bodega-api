@@ -14,10 +14,12 @@ class sheetscomplete implements WithMultipleSheets
 
     private $FI;
     private $FF;
-    public function __construct(String $FI, String $FF)
+    private $type;
+    public function __construct(String $FI, String $FF, String $type)
     {
         $this->FI = $FI;
         $this->FF = $FF;
+        $this->type = $type;
     }
     public function sheets(): array
     {
@@ -25,11 +27,19 @@ class sheetscomplete implements WithMultipleSheets
         $organization_name = Auth::user()->organization->name;
         $sheets = [];
         $data = [$organization_id, $organization_name, $this->FI, $this->FF];
+        //Inventario de Materia Prima
+        if ($this->type == 1)   $sheets['Sheet1'] = new inventoryExport($data);
+        //Inventario de Producto Terminado
+        if ($this->type == 2)   $sheets['Sheet2'] = new inventoryExportPT($data);
+        //Productos mas vendidos
+        if ($this->type == 3)   $sheets['Sheet3'] = new BestSeller($data);
+        //productos Menos Vendidos
+        if ($this->type == 4)   $sheets['Sheet3'] = new LowExport($data);
+        //Reporte de ventas
+        if ($this->type == 5)   $sheets['Sheet4'] = new SalesExport($data);
 
-        $sheets['Sheet1'] = new inventoryExport($data);
-        $sheets['Sheet2'] = new inventoryExportPT($data);
-        $sheets['Sheet3'] = new SalesExport($data);
-        $sheets['Sheet4'] = new PurchaseExport($data);
+        //Reporte de Compras
+        if ($this->type == 6)   $sheets['Sheet5'] = new PurchaseExport($data);
 
         return $sheets;
     }
