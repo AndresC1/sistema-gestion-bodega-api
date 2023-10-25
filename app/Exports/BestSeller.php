@@ -2,7 +2,9 @@
 
 namespace App\Exports;
 
-use App\Models\Inventory;
+use App\Models\DetailsSale;
+use App\Models\OutputsProduct;
+use App\Models\Sale;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -16,8 +18,9 @@ use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use Illuminate\Support\Facades\DB;
 
-class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle, WithDrawings
+class BestSeller implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle
 {
     private $data;
 
@@ -27,65 +30,57 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
     }
     public function startCell(): string
     {
-        return 'A3';
+        return 'A4';
     }
     public function query()
     {
 
-        return Inventory::query()
-        ->join('products', 'inventories.product_id', '=', 'products.id')
-        ->where('inventories.organization_id', $this->data[0])
-        ->where('inventories.type', 'MP')
-        ->select(
-            'products.name as product_name', 
-            'inventories.type',
-            'inventories.stock',
-            'inventories.stock_min',
-            'inventories.unit_of_measurement',
-            'inventories.location',
-            Inventory::raw("DATE_FORMAT(inventories.date_last_modified, '%d/%m/%Y') as Fecha"),
-            'inventories.lot_number',
-            'inventories.note',
-            'inventories.status',
-            'inventories.total_value',
-        );
 
+        return OutputsProduct::query()
+        ->select(
+            'products.name',
+            DB::raw('SUM(outputs_products.quantity) as total_quantity'),
+            DB::raw('SUM(outputs_products.total) as total_earnings')
+        )
+        ->join('inventories', 'outputs_products.inventory_id', '=', 'inventories.id')
+        ->join('products', 'inventories.product_id', '=', 'products.id')
+        ->where('inventories.type', 'PT')
+        ->whereBetween('outputs_products.date', [$this->data[2], $this->data[3]])
+        ->groupBy('products.name')
+        ->orderByDesc('total_quantity');
     }
     
 
     public function headings(): array
     {
         return [
-            'Producto',
-            'Tipo',
-            'Stock',
-            'Stock Mínimo',
-            'Unidad de Medida',
-            'Ubicación',
-            'Fecha',
-            'Número de Lote',
-            'Nota',
-            'Estado',
-            'Valor Total',
+            'Nombre del Producto',
+            'Cantidad Total Vendida',
+            'Ganancia Total',
         ];
     }
     public function title(): string
     {
-        return 'Inventario MP'; // Asigna un nombre diferente para esta hoja
+        return 'Mas vendido'; // Asigna un nombre diferente para esta hoja
     }
     
    
     public function styles(Worksheet $sheet)
 
     {
-        $sheet->setCellValue('D1', $this->data[1]);
-        $sheet->setCellValue('D2', 'Reporte de Inventario de Materia Prima');
+        $fecha1 = Carbon::createFromFormat('Y-m-d', $this->data[2])->format('d/m/Y');
+        $fecha2 = Carbon::createFromFormat('Y-m-d', $this->data[3])->format('d/m/Y');
+        $sheet->setCellValue('B1', $this->data[1]);
+        $sheet->setCellValue('B2', 'Reporte Producto Mas Vendido');
+        $sheet->setCellValue('B3', 'De ' . $fecha1 . ' A ' . $fecha2);
 
+         // Aplicar alineación derecha a todas las columnas, excepto la columna A y la columna I=> era la de las notas
         $sheet->getStyle('A:I')->applyFromArray([
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
             ],
         ]);
+        
 
 
 
@@ -95,7 +90,7 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
         // Obtener el índice de la última columna con contenido
         $highestColumnIndex = $sheet->getHighestDataColumn();
 
-        $sheet->mergeCells('A1:C2');
+        $sheet->mergeCells('A1:A3');
 
         // Determinar el rango de la tabla basado en el contenido
         $tableStartColumn = 'A'; // Columna inicial de la tabla
@@ -104,16 +99,19 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
         $tableEndRow = $highestRow; // Fila final de la tabla
 
         // Combinar celdas de la fila 1 desde A1 hasta la última columna con contenido
-        $tableStartCell = 'D1';
+        $tableStartCell = 'B1';
         $tableEndCell = $tableEndColumn . '1';
         $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
         // Combinar celdas de la fila 2 desde A2 hasta la última columna con contenido
-        $tableStartCell = 'D2';
+        $tableStartCell = 'B2';
         $tableEndCell = $tableEndColumn . '2';
         $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
-        
+         // Combinar celdas de la fila 3 desde A3 hasta la última columna con contenido
+         $tableStartCell = 'B3';
+         $tableEndCell = $tableEndColumn . '3';
+         $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
         // Aplicar bordes a toda la tabla
         $tableRange = $tableStartColumn . $tableStartRow . ':' . $tableEndColumn . $tableEndRow;
@@ -131,7 +129,7 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
                 'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ]);
-        $sheet->getStyle('1:3')->applyFromArray([
+        $sheet->getStyle('1:4')->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -143,28 +141,8 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
         // Aplicar estilo a la fila 2 (tamaño de fuente 20)
         $sheet->getStyle('2')->getFont()->setSize(18);
 
-       
+        // Aplicar estilo a la fila 3 (tamaño de fuente 16)
+        $sheet->getStyle('3')->getFont()->setSize(14);
        
     }
-
-    public function drawings()
-    {
-        // Ruta de la imagen redimensionada
-        $imagePath = public_path('code.png');
-
-        // Crea un objeto Drawing
-        $drawing = new Drawing();
-        $drawing->setName('MyImage');
-        $drawing->setDescription('Description');
-        $drawing->setPath($imagePath);
-
-        // Establece el tamaño de la imagen para que se ajuste al rango de celdas A1:C3
-        $drawing->setCoordinates('A1');
-        $drawing->setOffsetX(0); // Ajusta la posición horizontal
-        $drawing->setOffsetY(0); // Ajusta la posición vertical
-        $drawing->setWidthAndHeight(200, 200); // Ajusta el ancho y la altura para que coincida con A1:C3
-
-        return [$drawing];
-    }
-   
 }
