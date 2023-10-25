@@ -154,6 +154,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('/MP/list', [InventoryController::class, "list_product_in_MP"]);
                 Route::get('PT/list', [InventoryController::class, "list_product_in_PT"]);
             });
+
+
         });
         Route::middleware('check_permission:add_inventory')->group(function () {
             Route::post('/inventory', [InventoryController::class, "store"]);
@@ -194,6 +196,15 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:see_earnings_of_my_organization')->group(function () {
             Route::get('/earnings_total', [EarningsController::class, "short_term_profits"]);
             Route::get('/earnings_last_year', [EarningsController::class, "calculate_earnings_last_year"]);
+        });
+        //Route::post('/complete/export', [ExportController::class, 'CompleteExport']);
+        Route::prefix('complete/export')->middleware('validate_date_range')->group(function () {
+            Route::post('/MP', [ExportController::class, 'InventoryMP']);
+            Route::post('/PT', [ExportController::class, 'InventoryPT']);
+            Route::post('/BestSeller', [ExportController::class, 'BestSeller']);
+            Route::post('/Sales', [ExportController::class, 'Sales']);
+            Route::post('/Purchase', [ExportController::class, 'Purchase']);
+            Route::post('/Low', [ExportController::class, 'Low']);
         });
     });
 });
