@@ -17,13 +17,16 @@ use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle, WithDrawings
+
+class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle
 {
     private $data;
+    private $productName;
 
     public function __construct($data)
     {
         $this->data = $data;
+        $this->productName = $data[4] ?? null;
     }
     public function startCell(): string
     {
@@ -32,24 +35,28 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
     public function query()
     {
 
-        return Inventory::query()
+        $query = Inventory::query()
         ->join('products', 'inventories.product_id', '=', 'products.id')
         ->where('inventories.organization_id', $this->data[0])
         ->where('inventories.type', 'MP')
         ->select(
-            'products.name as product_name', 
+            'products.name as product_name',
             'inventories.type',
             'inventories.stock',
             'inventories.stock_min',
             'inventories.unit_of_measurement',
             'inventories.location',
-            Inventory::raw("DATE_FORMAT(inventories.date_last_modified, '%d/%m/%Y') as Fecha"),
             'inventories.lot_number',
             'inventories.note',
             'inventories.status',
-            'inventories.total_value',
+            'inventories.total_value'
         );
 
+    if ($this->productName) {
+        $query->where('products.name', $this->productName);
+    }
+
+     return $query;
     }
     
 
@@ -62,7 +69,6 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
             'Stock Mínimo',
             'Unidad de Medida',
             'Ubicación',
-            'Fecha',
             'Número de Lote',
             'Nota',
             'Estado',
@@ -81,11 +87,26 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
         $sheet->setCellValue('D1', $this->data[1]);
         $sheet->setCellValue('D2', 'Reporte de Inventario de Materia Prima');
 
-        $sheet->getStyle('A:I')->applyFromArray([
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-            ],
-        ]);
+        // Aplicar alineación centrada a las columnas A a G
+    $sheet->getStyle('A:G')->applyFromArray([
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+        ],
+    ]);
+
+    // Obtén la dimensión de la columna H y establece la alineación a la izquierda
+    $sheet->getStyle('H')->applyFromArray([
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_LEFT,
+        ],
+    ]);
+    // Aplicar alineación centrada a las columnas I a la última columna
+    $highestColumn = $sheet->getHighestColumn();
+    $sheet->getStyle('I:' . $highestColumn)->applyFromArray([
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+        ],
+    ]);
 
 
 
@@ -143,10 +164,14 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
         // Aplicar estilo a la fila 2 (tamaño de fuente 20)
         $sheet->getStyle('2')->getFont()->setSize(18);
 
+
+        // Ajusta el ancho de la columna H basado en su contenido
+        $columnIndex = 'H'; // Columna que deseas ajustar
+        $sheet->getColumnDimension($columnIndex)->setAutoSize(true);
        
        
     }
-
+    /*
     public function drawings()
     {
         // Ruta de la imagen redimensionada
@@ -165,6 +190,6 @@ class inventoryExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSt
         $drawing->setWidthAndHeight(200, 200); // Ajusta el ancho y la altura para que coincida con A1:C3
 
         return [$drawing];
-    }
+    }*/
    
 }

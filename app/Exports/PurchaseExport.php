@@ -19,10 +19,12 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
 {
 
     private $data; 
+    private $productName;
 
     public function __construct($data)
     {
         $this->data = $data;
+        $this->productName = $data[4] ?? null;
     }
     public function startCell(): string
     {
@@ -33,7 +35,7 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
     {
 
         //nota de entrada materia prima
-        return Purchase::query()
+        $query= Purchase::query()
         ->join('details_purchases', 'purchases.id', '=', 'details_purchases.purchase_id')
         ->join('products', 'details_purchases.product_id', '=', 'products.id')
         ->join('users', 'purchases.user_id', '=', 'users.id')
@@ -44,15 +46,19 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
         ->select(
             'purchases.number_bill',
             'products.name as nombre_producto',
-            'organizations.name as nombre_organizacion',
             'providers.name as nombre_proveedor',
             'users.name as nombre_usuario',
             'purchases.date',
-            'purchases.total',
-            'details_purchases.quantity',
             'details_purchases.price',
-            
+            'details_purchases.quantity',
+            'details_purchases.total',
         );
+
+        if ($this->productName) {
+            $query->where('products.name', $this->productName);
+        }
+    
+        return $query;
     }
 
     public function headings(): array
@@ -60,13 +66,12 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
         return [
             'factura',
             'producto',
-            'organizacion',
             'proveedor',
             'nombre usuario',
             'fecha',
-            'total',
-            'cantidad',
             'precio',
+            'cantidad',
+            'total',
            
         ];
     }
@@ -78,8 +83,11 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
     {
         $fecha1 = Carbon::createFromFormat('Y-m-d', $this->data[2])->format('d/m/Y');
         $fecha2 = Carbon::createFromFormat('Y-m-d', $this->data[3])->format('d/m/Y');
+
+        $title = ($this->productName) ? 'Compras de ' . $this->productName : 'Reporte de Compra';
+
         $sheet->setCellValue('D1', $this->data[1]);
-        $sheet->setCellValue('D2', 'Reporte de Compra');
+        $sheet->setCellValue('D2', $title);
         $sheet->setCellValue('D3', 'De ' . $fecha1 . ' A ' . $fecha2);
 
         $sheet->getStyle('A:I')->applyFromArray([

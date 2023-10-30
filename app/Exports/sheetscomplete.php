@@ -2,8 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Inventory;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Illuminate\Support\Facades\Auth;
@@ -15,18 +13,22 @@ class sheetscomplete implements WithMultipleSheets
     private $FI;
     private $FF;
     private $type;
-    public function __construct(String $FI, String $FF, String $type)
+    private $product;
+    public function __construct(String $FI, String $FF, String $type, String $product=null)
     {
         $this->FI = $FI;
         $this->FF = $FF;
         $this->type = $type;
+        $this->product = $product;
     }
     public function sheets(): array
     {
         $organization_id = Auth::user()->organization_id;
         $organization_name = Auth::user()->organization->name;
         $sheets = [];
-        $data = [$organization_id, $organization_name, $this->FI, $this->FF];
+        if($this->product)  $data = [$organization_id, $organization_name, $this->FI, $this->FF, $this->product];
+        else    $data = [$organization_id, $organization_name, $this->FI, $this->FF];
+        
         //Inventario de Materia Prima
         if ($this->type == 1)   $sheets['Sheet1'] = new inventoryExport($data);
         //Inventario de Producto Terminado
