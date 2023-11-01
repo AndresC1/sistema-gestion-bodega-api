@@ -14,13 +14,15 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 
+
 class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle
 {
     private $data;
-
+    private $productName;
     public function __construct($data)
     {
         $this->data = $data;
+        $this->productName = $data[4] ?? null;
     }
     public function startCell(): string
     {
@@ -29,7 +31,7 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
     public function query()
     {
 
-        return Inventory::query()
+        $query=  Inventory::query()
         ->join('products', 'inventories.product_id', '=', 'products.id')
         ->where('inventories.organization_id', $this->data[0])
         ->where('inventories.type', 'PT')
@@ -40,12 +42,16 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
             'inventories.stock_min',
             'inventories.unit_of_measurement',
             'inventories.location',
-            Inventory::raw("DATE_FORMAT(inventories.date_last_modified, '%d/%m/%Y') as Fecha"),
             'inventories.lot_number',
             'inventories.note',
             'inventories.status',
             'inventories.total_value',
         );
+        if ($this->productName) {
+            $query->where('products.name', $this->productName);
+        }
+    
+        return $query;
 
     }
     
@@ -59,7 +65,6 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
             'Stock Mínimo',
             'Unidad de Medida',
             'Ubicación',
-            'Fecha',
             'Número de Lote',
             'Nota',
             'Estado',
@@ -77,11 +82,26 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
         $sheet->setCellValue('D1', $this->data[1]);
         $sheet->setCellValue('D2', 'Reporte de Inventario de Producto Terminado');
 
-        $sheet->getStyle('A:I')->applyFromArray([
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-            ],
-        ]);
+        // Aplicar alineación centrada a las columnas A a G
+    $sheet->getStyle('A:G')->applyFromArray([
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+        ],
+    ]);
+
+    // Obtén la dimensión de la columna H y establece la alineación a la izquierda
+    $sheet->getStyle('H')->applyFromArray([
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_LEFT,
+        ],
+    ]);
+    // Aplicar alineación centrada a las columnas I a la última columna
+    $highestColumn = $sheet->getHighestColumn();
+    $sheet->getStyle('I:' . $highestColumn)->applyFromArray([
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+        ],
+    ]);
 
        // Obtener el número de la última fila con contenido
        $highestRow = $sheet->getHighestRow();

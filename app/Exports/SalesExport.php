@@ -20,10 +20,13 @@ class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles
 {
 
     private $data;
+    private $productName;
 
     public function __construct($data)
     {
         $this->data = $data;
+        $this->productName = $data[4] ?? null;
+
     }
     public function startCell(): string
     {
@@ -33,23 +36,31 @@ class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles
     public function query()
     {
         // salida de producto terminado que ponga la nota
-        return Sale::query()
+        $query= Sale::query()
         ->join('clients', 'sales.client_id', '=', 'clients.id')
         ->join('users', 'sales.user_id', '=', 'users.id')
         ->join('organizations', 'sales.organization_id', '=', 'organizations.id')
         ->join('details_sales', 'sales.id', '=', 'details_sales.sale_id')
+        ->join('product_inputs', 'details_sales.product_input_id', '=', 'product_inputs.id')
+        ->join('inventories', 'product_inputs.inventory_id', '=', 'inventories.id')
+        ->join('products', 'inventories.product_id', '=', 'products.id')
         ->where('sales.organization_id', $this->data[0])
-        ->whereBetween('sales.created_at', [$this->data[2], $this->data[3]])
+        ->whereBetween('sales.date', [$this->data[2], $this->data[3]])
         ->select(
             'sales.number_bill as Número de Factura',
             'clients.name as Cliente',
             'users.name as Usuario',
             Sale::raw("DATE_FORMAT(sales.date, '%d/%m/%Y') as Fecha"),
-            'sales.total as Total',
-            'details_sales.cost_total',
-            'sales.earning_total as Ganancia Total',
+            'details_sales.total as Precio Venta',
+            'details_sales.cost_unit as Costo',
+            'details_sales.earning as Ganancia Total',
             'sales.note as Nota'
         );
+        if ($this->productName) {
+            $query->where('products.name', $this->productName);
+        }
+    
+         return $query;
     }
     public function headings(): array
     {
@@ -67,15 +78,17 @@ class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles
     }
     public function title(): string
     {
-        return 'Ventas'; // Asigna un nombre diferente para esta hoja
+        return 'Ventas'; // nombre de la hoja
     }
     
     public function styles(Worksheet $sheet)
     {
         $fecha1 = Carbon::createFromFormat('Y-m-d', $this->data[2])->format('d/m/Y');
         $fecha2 = Carbon::createFromFormat('Y-m-d', $this->data[3])->format('d/m/Y');
+        $title = ($this->productName) ? 'Ventas de ' . $this->productName : 'Reporte de Venta';
+
         $sheet->setCellValue('D1', $this->data[1]);
-        $sheet->setCellValue('D2', 'Reporte de Venta');
+        $sheet->setCellValue('D2', $title);
         $sheet->setCellValue('D3', 'De ' . $fecha1 . ' A ' . $fecha2);
 
         $sheet->getStyle('A:I')->applyFromArray([

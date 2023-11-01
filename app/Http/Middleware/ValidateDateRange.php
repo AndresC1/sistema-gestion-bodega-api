@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Product;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,21 @@ class ValidateDateRange
             if (isset($data['fechas']) && is_array($data['fechas']) && count($data['fechas']) === 2) {
                 $fecha1 = $data['fechas'][0];
                 $fecha2 = $data['fechas'][1];
-        
+
+                
+                $nombreProducto = isset($data['nombre_producto']) ? $data['nombre_producto'] : null;
+
+                // Verificar la existencia del producto en la base de datos
+                if (!empty($nombreProducto)) {
+                    $producto = Product::where('name', $nombreProducto)->first();
+                    if (!$producto) {
+                        return response()->json([
+                            'mensaje' => 'El producto especificado no se encuentra en la base de datos',
+                            'estado' => 400
+                        ], 400);
+                    }
+                }
+
                 // Validar que ambas fechas sean cadenas
                 if (is_string($fecha1) && is_string($fecha2)) {
                     // Intentar crear objetos Carbon para ambas fechas
