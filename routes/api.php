@@ -196,6 +196,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:see_earnings_of_my_organization')->group(function () {
             Route::get('/earnings_total', [EarningsController::class, "short_term_profits"]);
             Route::get('/earnings_last_year', [EarningsController::class, "calculate_earnings_last_year"]);
+            Route::get('/earnings_last_month', [EarningsController::class, "calculate_earnings_for_day"]);
         });
         //Route::post('/complete/export', [ExportController::class, 'CompleteExport']);
         Route::prefix('complete/export')->middleware('validate_date_range')->group(function () {

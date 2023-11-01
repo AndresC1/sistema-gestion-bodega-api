@@ -75,4 +75,22 @@ class EarningsController extends Controller
             ], 500);
         }
     }
+
+    public function calculate_earnings_for_day(){
+        try{
+            $earnings_for_day = $this->calculateEarnings->calculateEarningsForWeek();
+
+            return response()->json([
+                'data' => $earnings_for_day,
+                'mensaje' => 'Ganancias del día',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e){
+            return response()->json([
+                'mensaje' => 'Error al calcular las ganancias del día',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
 }

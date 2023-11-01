@@ -15,7 +15,7 @@ use Tests\TestCase;
 
 class EarningsTest extends TestCase
 {
-    use DatabaseTransactions;
+//    use DatabaseTransactions;
 
     protected $organization_new;
     protected $client_new;
@@ -66,6 +66,8 @@ class EarningsTest extends TestCase
         $earnings = new EarningsDays();
         $earnings_today = $earnings->calculate();
 
+        dump($earnings_today);
+
         $this->assertEquals($earnings_today['earnings_total'], 200);
         $this->assertEquals($earnings_today['sales_total'], 2);
     }
@@ -101,6 +103,8 @@ class EarningsTest extends TestCase
     {
         $earningsLastYear = new EarningsForMonth();
         $earnings = $earningsLastYear->calculate();
+
+        dump($earnings);
 
         // September 2022
         $this->assertEquals($earnings[0]['mes'], 'September');
