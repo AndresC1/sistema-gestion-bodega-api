@@ -26,4 +26,11 @@ class CalculateEarnings
 
         return $earnings_last_year;
     }
+
+    public function calculateEarningsForWeek(){
+        $earnings_for_week = new EarningsForWeek();
+        $earnings_for_week = $earnings_for_week->calculate();
+
+        return $earnings_for_week;
+    }
 }
