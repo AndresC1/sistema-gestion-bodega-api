@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Organization\StoreOrganizationRequest as StoreOrganizationRequest;
+use App\Http\Requests\Organization\UpdateMyOrganizationRequest;
 use App\Http\Requests\Organization\UpdateOrganizationRequest as UpdateOrganizationRequest;
 use App\Http\Resources\User\UserCleanResource;
 use App\Models\Organization;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request as FacadesRequest;
+use Illuminate\Support\Facades\Storage;
 
 class OrganizationController extends Controller
 {
@@ -121,7 +123,15 @@ class OrganizationController extends Controller
     public function update(UpdateOrganizationRequest $request, Organization $organization)
     {
         try{
+            DB::beginTransaction();
             $request->validated();
+            if($request->hasFile('image')){
+                $url_image = Storage::disk('public')->put('organizations/'.$organization->id.'/logo', $request->file('image'));
+                $new_image = FacadesRequest::root().'/public/storage/'.$url_image;
+                if(Storage::disk('public')->exists(str_replace(FacadesRequest::root().'/public/storage/', '', $organization->image))){
+                    Storage::disk('public')->delete(str_replace(FacadesRequest::root().'/public/storage/', '', $organization->image));
+                }
+            }
             $organization->update([
                 'name' => $request['name']??$organization->name,
                 'ruc' => $request['ruc']??$organization->ruc,
@@ -131,13 +141,16 @@ class OrganizationController extends Controller
                 'city_id' => $request['city_id']??$organization->city_id,
                 'phone_main' => $request['phone_main']??$organization->phone_main,
                 'phone_secondary' => $request['phone_secondary']??$organization->phone_secondary,
+                'image' => $new_image??$organization->image,
             ]);
+            DB::commit();
             return response()->json([
                 'organizacion' => new OrganizationResource($organization),
                 'mensaje' => 'Organización actualizada correctamente',
                 'estado' => 200
             ], 200);
         } catch(Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'mensaje' => 'Error al actualizar la organización',
                 'error' => $e->getMessage(),
@@ -242,42 +255,37 @@ class OrganizationController extends Controller
         }
     }
 
-    public function update_my_organization(Request $request){
+    public function update_my_organization(UpdateMyOrganizationRequest $request){
         try{
+            DB::beginTransaction();
+            $request->validated();
             $organization = Organization::find(Auth::user()->organization_id);
-            $validacion = new UpdateOrganizationRequest($organization);
-            $request->validate($validacion->rules(), $validacion->messages());
+            if($request->hasFile('image')){
+                $url_image = Storage::disk('public')->put('organizations/'.$organization->id.'/logo', $request->file('image'));
+                $new_image = FacadesRequest::root().'/public/storage/'.$url_image;
+                if(Storage::disk('public')->exists(str_replace(FacadesRequest::root().'/public/storage/', '', $organization->image))){
+                    Storage::disk('public')->delete(str_replace(FacadesRequest::root().'/public/storage/', '', $organization->image));
+                }
+            }
             $organization->update([
-                'name' => $request->name??$organization->name,
-                'ruc' => $request->ruc??$organization->ruc,
-                'address' => $request->address??$organization->address,
-                'sector_id' => $request->sector_id??$organization->sector_id,
-                'municipality_id' => $request->municipality_id??$organization->municipality_id,
-                'city_id' => $request->city_id??$organization->city_id,
-                'phone_main' => $request->phone_main??$organization->phone_main,
-                'phone_secondary' => $request->phone_secondary??$organization->phone_secondary,
+                'name' => $request['name']??$organization->name,
+                'ruc' => $request['ruc']??$organization->ruc,
+                'address' => $request['address']??$organization->address,
+                'sector_id' => $request['sector_id']??$organization->sector_id,
+                'municipality_id' => $request['municipality_id']??$organization->municipality_id,
+                'city_id' => $request['city_id']??$organization->city_id,
+                'phone_main' => $request['phone_main']??$organization->phone_main,
+                'phone_secondary' => $request['phone_secondary']??$organization->phone_secondary,
+                'image' => $new_image??$organization->image,
             ]);
+            DB::commit();
             return response()->json([
                 'organizacion' => new OrganizationResource($organization),
-                'mensaje' => 'Organización obtenida correctamente',
-                'estado' => 200
-            ], 200);
-            $organization->update([
-                'name' => $request->name??$organization->name,
-                'ruc' => $request->ruc??$organization->ruc,
-                'address' => $request->address??$organization->address,
-                'sector_id' => $request->sector_id??$organization->sector_id,
-                'municipality_id' => $request->municipality_id??$organization->municipality_id,
-                'city_id' => $request->city_id??$organization->city_id,
-                'phone_main' => $request->phone_main??$organization->phone_main,
-                'phone_secondary' => $request->phone_secondary??$organization->phone_secondary,
-            ]);
-            return response()->json([
-                'organizacion' => new OrganizationResource($organization),
-                'mensaje' => 'Organización obtenida correctamente',
+                'mensaje' => 'Organización actualizada correctamente',
                 'estado' => 200
             ], 200);
         } catch(Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'mensaje' => 'Error al actualizar la organización',
                 'error' => $e->getMessage(),

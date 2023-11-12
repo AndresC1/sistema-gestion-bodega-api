@@ -79,7 +79,7 @@ Route::prefix('v1')->group(function () {
             Route::patch('/organization/{organization}', [OrganizationController::class, "update"]);
         });
         Route::middleware('check_permission:update_my_organization')->group(function () {
-            Route::patch('/organization_update', [OrganizationController::class, "update_my_organization"]);
+            Route::post('/organization_update', [OrganizationController::class, "update_my_organization"]);
         });
         Route::middleware('check_permission:delete_organization')->group(function () {
             Route::delete('/organization/{organization}', [OrganizationController::class, "destroy"]);
