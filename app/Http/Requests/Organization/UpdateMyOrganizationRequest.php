@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests\Organization;
 
-// use Illuminate\Contracts\Validation\Rule;
-
-use App\Models\Organization;
 use App\Rules\OrganizationRule\MatchOldAddress;
 use App\Rules\OrganizationRule\MatchOldCity;
 use App\Rules\OrganizationRule\MatchOldMunicipality;
@@ -14,14 +11,8 @@ use App\Rules\OrganizationRule\MatchOldSector;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as Rule;
 
-class UpdateOrganizationRequest extends FormRequest
+class UpdateMyOrganizationRequest extends FormRequest
 {
-    protected $organization;
-
-    public function __construct(Organization $organization)
-    {
-        $this->organization = $organization;
-    }
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -37,47 +28,39 @@ class UpdateOrganizationRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('id');
-        $organization = $this->route('organization')?? $this->organization;
         return [
             "name" => [
                 "string",
-                Rule::unique('organizations', 'name')->ignore($id, 'id'),
+                "unique:organizations,name",
             ],
             "ruc" => [
                 "string",
-                Rule::unique('organizations', 'ruc')->ignore($id, 'id'),
+                "unique:organizations,ruc",
                 "max:14"
             ],
             "address" => [
                 "nullable",
                 "string",
-                new MatchOldAddress($organization->address)
             ],
             "sector_id" => [
                 "integer",
                 "exists:sectors,id",
-                new MatchOldSector($organization->sector_id)
             ],
             "municipality_id" => [
                 "integer",
                 "exists:municipalities,id",
-                new MatchOldMunicipality($organization->municipality_id)
             ],
             "city_id" => [
                 "integer",
                 "exists:cities,id",
-                new MatchOldCity($organization->city_id)
             ],
             "phone_main" => [
                 "string",
-                new MatchOldPhoneMain($organization->phone_main),
             ],
             "phone_secondary" => [
                 "nullable",
                 "string",
                 "different:phone_main",
-                new MatchOldPhoneSecondary($organization->phone_secondary),
             ],
             "image" => [
                 "nullable",
