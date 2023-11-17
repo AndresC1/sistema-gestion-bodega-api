@@ -134,13 +134,13 @@ class OrganizationController extends Controller
             }
             $organization->update([
                 'name' => $request['name']??$organization->name,
-                'ruc' => $request['ruc']??$organization->ruc,
-                'address' => $request['address']??$organization->address,
+                'ruc' => $request['ruc'],
+                'address' => $request['address'],
                 'sector_id' => $request['sector_id']??$organization->sector_id,
                 'municipality_id' => $request['municipality_id']??$organization->municipality_id,
                 'city_id' => $request['city_id']??$organization->city_id,
-                'phone_main' => $request['phone_main']??$organization->phone_main,
-                'phone_secondary' => $request['phone_secondary']??$organization->phone_secondary,
+                'phone_main' => $request['phone_main'],
+                'phone_secondary' => $request['phone_secondary'],
                 'image' => $new_image??$organization->image,
             ]);
             DB::commit();
@@ -269,7 +269,7 @@ class OrganizationController extends Controller
             }
             $organization->update([
                 'name' => $request['name']??$organization->name,
-                'ruc' => $request['ruc']??$organization->ruc,
+                'ruc' => $request['ruc'],
                 'address' => $request['address'],
                 'sector_id' => $request['sector_id']??$organization->sector_id,
                 'municipality_id' => $request['municipality_id']??$organization->municipality_id,

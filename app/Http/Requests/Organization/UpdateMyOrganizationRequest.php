@@ -36,7 +36,8 @@ class UpdateMyOrganizationRequest extends FormRequest
             "ruc" => [
                 "string",
                 "unique:organizations,ruc",
-                "max:14"
+                "max:14",
+                "nullable"
             ],
             "address" => [
                 "nullable",
@@ -56,6 +57,7 @@ class UpdateMyOrganizationRequest extends FormRequest
             ],
             "phone_main" => [
                 "string",
+                "nullable"
             ],
             "phone_secondary" => [
                 "nullable",

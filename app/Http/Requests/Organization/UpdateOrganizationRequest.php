@@ -47,7 +47,8 @@ class UpdateOrganizationRequest extends FormRequest
             "ruc" => [
                 "string",
                 Rule::unique('organizations', 'ruc')->ignore($id, 'id'),
-                "max:14"
+                "max:14",
+                "nullable"
             ],
             "address" => [
                 "nullable",
@@ -70,6 +71,7 @@ class UpdateOrganizationRequest extends FormRequest
                 new MatchOldCity($organization->city_id)
             ],
             "phone_main" => [
+                "nullable",
                 "string",
                 new MatchOldPhoneMain($organization->phone_main),
             ],
