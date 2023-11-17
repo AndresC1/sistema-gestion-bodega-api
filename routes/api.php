@@ -18,10 +18,10 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\Conversion\ConverterController;
 use App\Http\Controllers\ExportSQL\ExportSQLController;
 use App\Http\Controllers\ExportarExcel\ExportController;
-use App\Models\Purchase;
 use App\Http\Controllers\Earning\EarningsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Information\AplicationController;
 
 Route::prefix('v1')->group(function () {
     // Autenticación
@@ -206,6 +206,9 @@ Route::prefix('v1')->group(function () {
             Route::post('/Sales', [ExportController::class, 'Sales']);
             Route::post('/Purchase', [ExportController::class, 'Purchase']);
             Route::post('/Low', [ExportController::class, 'Low']);
+        });
+        Route::middleware('check_permission:see_dashboard_super_admin')->group(function () {
+            Route::get('/information', [AplicationController::class, "dashboard_super_admin"]);
         });
     });
 });

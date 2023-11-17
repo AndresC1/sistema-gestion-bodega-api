@@ -52,6 +52,7 @@ class PermissionSeeder extends Seeder
             ["name" => "export_database_for_organization", "description" =>"Exportar base de datos de una organizacion"],
             ["name" => "export_database_global", "description" =>"Exportar base de datos del sistema"],
             ["name" => "see_earnings_of_my_organization", "description" =>"Ver ganancias de mi organizacion"],
+            ["name" => "see_dashboard_super_admin", "description" =>"Dashboard para usuario super_admin"],
             // ["name" => "", "description" =>""],
         ];
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
