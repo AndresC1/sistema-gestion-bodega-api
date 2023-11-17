@@ -23,7 +23,7 @@ class StoreOrganizationRequest extends FormRequest
     {
         return [
             "name" => "required|string|unique:organizations,name",
-            "ruc" => "nullable|string|unique:organizations,ruc|max:14",
+            "ruc" => "nullable|string|max:14",
             "address" => "nullable|string",
             "sector_id" => "required|integer|exists:sectors,id",
             "municipality_id" => "required|integer|exists:municipalities,id",

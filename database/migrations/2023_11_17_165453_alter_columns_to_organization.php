@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('organizations', function (Blueprint $table) {
             $table->string('address')->nullable()->change();
             $table->string('phone_main')->nullable()->change();
-            $table->string('ruc', 16)->nullable()->change();
+            $table->string('ruc', 16)->unique(false)->nullable()->change();
         });
     }
 

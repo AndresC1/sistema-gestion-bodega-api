@@ -46,7 +46,6 @@ class UpdateOrganizationRequest extends FormRequest
             ],
             "ruc" => [
                 "string",
-                Rule::unique('organizations', 'ruc')->ignore($id, 'id'),
                 "max:14",
                 "nullable"
             ],
