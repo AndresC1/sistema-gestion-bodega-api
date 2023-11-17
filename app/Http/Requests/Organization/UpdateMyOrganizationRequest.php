@@ -35,7 +35,6 @@ class UpdateMyOrganizationRequest extends FormRequest
             ],
             "ruc" => [
                 "string",
-                "unique:organizations,ruc",
                 "max:14",
                 "nullable"
             ],

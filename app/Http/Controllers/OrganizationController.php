@@ -281,6 +281,7 @@ class OrganizationController extends Controller
             DB::commit();
             return response()->json([
                 'organizacion' => new OrganizationResource($organization),
+                'ruc' => $request['ruc'],
                 'mensaje' => 'Organización actualizada correctamente',
                 'estado' => 200
             ], 200);
