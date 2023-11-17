@@ -23,12 +23,12 @@ class StoreOrganizationRequest extends FormRequest
     {
         return [
             "name" => "required|string|unique:organizations,name",
-            "ruc" => "required|string|unique:organizations,ruc|max:14",
+            "ruc" => "nullable|string|unique:organizations,ruc|max:14",
             "address" => "nullable|string",
             "sector_id" => "required|integer|exists:sectors,id",
             "municipality_id" => "required|integer|exists:municipalities,id",
             "city_id" => "required|integer|exists:cities,id",
-            "phone_main" => "required|string",
+            "phone_main" => "nullable|string",
             "phone_secondary" => "nullable|string",
             "image" => "nullable|image|mimes:jpeg,png,jpg,svg|max:2048",
         ];
