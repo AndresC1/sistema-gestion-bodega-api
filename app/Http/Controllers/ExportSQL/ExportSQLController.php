@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\Response;
 
 class ExportSQLController extends Controller
 {
-    public function exportSQLForOrganizations($organizationId)
+    public function exportSQLForOrganizations()
     {
+        $organizationId = auth()->user()->organization_id;
         $companyName = DB::table('organizations')->where('id', $organizationId)->value('name');
 
         $sqlFileName = 'export_' . $companyName . '_' . date('Y-m-d_His') . '.sql';
