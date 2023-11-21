@@ -184,8 +184,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/list_type_measurements', [ConverterController::class, "list_types_measurements"]);
         Route::get('/converter', [ConverterController::class, "converter"]);
         // Exportar SQL
-        Route::middleware('check_permission:export_database_for_organization')->group(function () {
-            Route::get('/export_sql/{organization}', [ExportSQLController::class, "exportSQLForOrganizations"]);
+        Route::middleware('check_permission:export_database_for_organization')->prefix('/export')->group(function () {
+            Route::get('/sql', [ExportSQLController::class, "exportSQLForOrganizations"]);
         });
         Route::middleware('check_permission:export_database_global')->group(function () {
             Route::get('/export_sql', [ExportSQLController::class, "exportSQLGlobal"]);
