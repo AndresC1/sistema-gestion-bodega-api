@@ -26,7 +26,7 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
     }
     public function startCell(): string
     {
-        return 'A3';
+        return 'A4';
     }
     public function query()
     {
@@ -51,7 +51,7 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
             $query->where('products.name', $this->productName);
         }
     
-        return $query;
+         return $query;
 
     }
     
@@ -79,8 +79,17 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
     public function styles(Worksheet $sheet)
     {
 
-        $sheet->setCellValue('D1', $this->data[1]);
-        $sheet->setCellValue('D2', 'Reporte de Inventario de Producto Terminado');
+        
+
+
+        $fecha1 = Carbon::createFromFormat('Y-m-d', $this->data[2])->format('d/m/Y');
+        $fecha2 = Carbon::createFromFormat('Y-m-d', $this->data[3])->format('d/m/Y');
+
+        $title = ($this->productName) ? 'Reporte de Inventario de ' . $this->productName : 'Reporte de Inventario de Prodcuto Terminado';
+
+        $sheet->setCellValue('A1', $this->data[1]);
+        $sheet->setCellValue('A2', $title);
+        $sheet->setCellValue('A3', 'De ' . $fecha1 . ' A ' . $fecha2);
 
         // Aplicar alineación centrada a las columnas A a G
     $sheet->getStyle('A:G')->applyFromArray([
@@ -109,7 +118,6 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
        // Obtener el índice de la última columna con contenido
        $highestColumnIndex = $sheet->getHighestDataColumn();
 
-       $sheet->mergeCells('A1:C2');
 
        // Determinar el rango de la tabla basado en el contenido
        $tableStartColumn = 'A'; // Columna inicial de la tabla
@@ -118,13 +126,18 @@ class inventoryExportPT implements FromQuery, ShouldAutoSize, WithHeadings, With
        $tableEndRow = $highestRow; // Fila final de la tabla
 
        // Combinar celdas de la fila 1 desde A1 hasta la última columna con contenido
-       $tableStartCell = 'D1';
+       $tableStartCell = 'A1';
        $tableEndCell = $tableEndColumn . '1';
        $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
        // Combinar celdas de la fila 2 desde A2 hasta la última columna con contenido
-       $tableStartCell = 'D2';
+       $tableStartCell = 'A2';
        $tableEndCell = $tableEndColumn . '2';
+       $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
+
+       // Combinar celdas de la fila 2 desde A2 hasta la última columna con contenido
+       $tableStartCell = 'A3';
+       $tableEndCell = $tableEndColumn . '3';
        $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
        

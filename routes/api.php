@@ -198,14 +198,15 @@ Route::prefix('v1')->group(function () {
             Route::get('/earnings_last_year', [EarningsController::class, "calculate_earnings_last_year"]);
             Route::get('/earnings_last_month', [EarningsController::class, "calculate_earnings_for_day"]);
         });
-        //Route::post('/complete/export', [ExportController::class, 'CompleteExport']);
+        
+        Route::get('/complete/export/Nada', [ExportController::class, 'Nada']);
         Route::prefix('complete/export')->middleware('validate_date_range')->group(function () {
-            Route::post('/MP', [ExportController::class, 'InventoryMP']);
-            Route::post('/PT', [ExportController::class, 'InventoryPT']);
-            Route::post('/BestSeller', [ExportController::class, 'BestSeller']);
-            Route::post('/Sales', [ExportController::class, 'Sales']);
-            Route::post('/Purchase', [ExportController::class, 'Purchase']);
-            Route::post('/Low', [ExportController::class, 'Low']);
+            Route::get('/MP', [ExportController::class, 'InventoryMP']);
+            Route::get('/PT', [ExportController::class, 'InventoryPT']);
+            Route::get('/BestSeller', [ExportController::class, 'BestSeller']);
+            Route::get('/Sales', [ExportController::class, 'Sales']);
+            Route::get('/Purchase', [ExportController::class, 'Purchase']);
+            Route::get('/Low', [ExportController::class, 'Low']);
         });
         Route::middleware('check_permission:see_dashboard_super_admin')->group(function () {
             Route::get('/information', [AplicationController::class, "dashboard_super_admin"]);
