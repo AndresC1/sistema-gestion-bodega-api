@@ -34,7 +34,8 @@ class BestSeller implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles,
     }
     public function query()
     {
-
+        $limit = 5; // Límite mínimo absoluto
+        $percentage = 30; // Porcentaje de productos menos vendidos a mostrar
 
         return OutputsProduct::query()
         ->select(
@@ -47,7 +48,8 @@ class BestSeller implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles,
         ->where('inventories.type', 'PT')
         ->whereBetween('outputs_products.date', [$this->data[2], $this->data[3]])
         ->groupBy('products.name')
-        ->orderByDesc('total_quantity');
+        ->orderByDesc('total_quantity')
+        ->limit($limit + ceil($limit * ($percentage / 100))); // Limitar la cantidad de resultados según la lógica establecida
     }
     
 
@@ -70,9 +72,9 @@ class BestSeller implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles,
     {
         $fecha1 = Carbon::createFromFormat('Y-m-d', $this->data[2])->format('d/m/Y');
         $fecha2 = Carbon::createFromFormat('Y-m-d', $this->data[3])->format('d/m/Y');
-        $sheet->setCellValue('B1', $this->data[1]);
-        $sheet->setCellValue('B2', 'Reporte Producto Mas Vendido');
-        $sheet->setCellValue('B3', 'De ' . $fecha1 . ' A ' . $fecha2);
+        $sheet->setCellValue('A1', $this->data[1]);
+        $sheet->setCellValue('A2', 'Reporte Producto Mas Vendido');
+        $sheet->setCellValue('A3', 'De ' . $fecha1 . ' A ' . $fecha2);
 
          // Aplicar alineación derecha a todas las columnas, excepto la columna A y la columna I=> era la de las notas
         $sheet->getStyle('A:I')->applyFromArray([
@@ -90,7 +92,7 @@ class BestSeller implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles,
         // Obtener el índice de la última columna con contenido
         $highestColumnIndex = $sheet->getHighestDataColumn();
 
-        $sheet->mergeCells('A1:A3');
+
 
         // Determinar el rango de la tabla basado en el contenido
         $tableStartColumn = 'A'; // Columna inicial de la tabla
@@ -99,17 +101,17 @@ class BestSeller implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles,
         $tableEndRow = $highestRow; // Fila final de la tabla
 
         // Combinar celdas de la fila 1 desde A1 hasta la última columna con contenido
-        $tableStartCell = 'B1';
+        $tableStartCell = 'A1';
         $tableEndCell = $tableEndColumn . '1';
         $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
         // Combinar celdas de la fila 2 desde A2 hasta la última columna con contenido
-        $tableStartCell = 'B2';
+        $tableStartCell = 'A2';
         $tableEndCell = $tableEndColumn . '2';
         $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
          // Combinar celdas de la fila 3 desde A3 hasta la última columna con contenido
-         $tableStartCell = 'B3';
+         $tableStartCell = 'A3';
          $tableEndCell = $tableEndColumn . '3';
          $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 

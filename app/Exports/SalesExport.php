@@ -14,6 +14,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Return_;
 
 class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles, WithCustomStartCell, WithTitle
@@ -45,19 +46,33 @@ class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles
         ->join('inventories', 'product_inputs.inventory_id', '=', 'inventories.id')
         ->join('products', 'inventories.product_id', '=', 'products.id')
         ->where('sales.organization_id', $this->data[0])
-        ->whereBetween('sales.date', [$this->data[2], $this->data[3]])
-        ->select(
-            'sales.number_bill as Número de Factura',
-            'clients.name as Cliente',
-            'users.name as Usuario',
-            Sale::raw("DATE_FORMAT(sales.date, '%d/%m/%Y') as Fecha"),
-            'details_sales.total as Precio Venta',
-            'details_sales.cost_unit as Costo',
-            'details_sales.earning as Ganancia Total',
-            'sales.note as Nota'
-        );
+        ->whereBetween('sales.date', [$this->data[2], $this->data[3]]);
+        
         if ($this->productName) {
             $query->where('products.name', $this->productName);
+            $query->select(
+                'sales.number_bill as Número de Factura',
+                'clients.name as Cliente',
+                'users.name as Usuario',
+                Sale::raw("DATE_FORMAT(sales.date, '%d/%m/%Y') as Fecha"),
+                'details_sales.total as Precio Venta',
+                'details_sales.cost_unit as Costo',
+                'details_sales.earning as Ganancia Total',
+                'sales.note as Nota',
+                'sales.payment_status'
+            );
+        }
+        else{
+            $query->select(
+                'sales.number_bill as Número de Factura',
+                'clients.name as Cliente',
+                'users.name as Usuario',
+                Sale::raw("DATE_FORMAT(sales.date, '%d/%m/%Y') as Fecha"),
+                'sales.total as Precio Venta',
+                'details_sales.cost_total as Costo',
+                'sales.earning_total as Ganancia Total',
+                'sales.note as Nota'
+            );
         }
     
          return $query;
@@ -87,9 +102,9 @@ class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles
         $fecha2 = Carbon::createFromFormat('Y-m-d', $this->data[3])->format('d/m/Y');
         $title = ($this->productName) ? 'Ventas de ' . $this->productName : 'Reporte de Venta';
 
-        $sheet->setCellValue('D1', $this->data[1]);
-        $sheet->setCellValue('D2', $title);
-        $sheet->setCellValue('D3', 'De ' . $fecha1 . ' A ' . $fecha2);
+        $sheet->setCellValue('A1', $this->data[1]);
+        $sheet->setCellValue('A2', $title);
+        $sheet->setCellValue('A3', 'De ' . $fecha1 . ' A ' . $fecha2);
 
         $sheet->getStyle('A:I')->applyFromArray([
             'alignment' => [
@@ -104,8 +119,7 @@ class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles
       // Obtener el índice de la última columna con contenido
       $highestColumnIndex = $sheet->getHighestDataColumn();
 
-      $sheet->mergeCells('A1:C3');
-
+     
       // Determinar el rango de la tabla basado en el contenido
       $tableStartColumn = 'A'; // Columna inicial de la tabla
       $tableEndColumn = $highestColumnIndex; // Columna final de la tabla
@@ -113,17 +127,17 @@ class SalesExport implements FromQuery, ShouldAutoSize, WithHeadings, WithStyles
       $tableEndRow = $highestRow; // Fila final de la tabla
 
       // Combinar celdas de la fila 1 desde A1 hasta la última columna con contenido
-      $tableStartCell = 'D1';
+      $tableStartCell = 'A1';
       $tableEndCell = $tableEndColumn . '1';
       $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
       // Combinar celdas de la fila 2 desde A2 hasta la última columna con contenido
-      $tableStartCell = 'D2';
+      $tableStartCell = 'A2';
       $tableEndCell = $tableEndColumn . '2';
       $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
        // Combinar celdas de la fila 3 desde A3 hasta la última columna con contenido
-       $tableStartCell = 'D3';
+       $tableStartCell = 'A3';
        $tableEndCell = $tableEndColumn . '3';
        $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 

@@ -15,18 +15,21 @@ class ExportController extends Controller
 {
     public function exportReport(Request $request, $sheetType, $sheetTypeName)
     {
-        $fechas = $request->input('fechas');
-        $nombreProducto = $request->input('nombre_producto');
+
+        $fromDate = str_replace('"', '', $request->input('fromDate'));
+        $toDate = str_replace('"', '', $request->input('toDate'));
+        $Producto = $request->input('product');
+        
     
         // Verificar las fechas
-        $fechasFormateadas = $this->validateAndFormatDates($fechas);
+        $fechasFormateadas = $this->validateAndFormatDates($fromDate,$toDate);
     
         // Verificar la existencia del producto si se proporciona un nombre
-        if (!empty($nombreProducto)) {
-            $producto = Product::where('name', $nombreProducto)->first();
+        if (!empty($Producto)) {
+            $nombreProducto = Product::where('id', $Producto)->value('name');
     
             // Comprobar si el producto existe
-            if (!$producto) {
+            if (!$nombreProducto) {
                 return response()->json([
                     'mensaje' => 'El producto especificado no se encuentra en la base de datos',
                     'estado' => 400
@@ -36,11 +39,13 @@ class ExportController extends Controller
             $organizacionUsuario = Auth::user()->organization;
 
             // Comprueba si la organización del producto coincide con la organización del usuario autenticado
-            $inventariosDelProducto = $producto->inventories;
+            $inventariosDelProducto = Product::find($Producto)->inventories;
+
 
             $inventarioValido = $inventariosDelProducto->first(function ($inventario) use ($organizacionUsuario) {
                 return $inventario->organization->id === $organizacionUsuario->id;
             });
+    
 
             if (!$inventarioValido) {
                 return response()->json([
@@ -62,21 +67,19 @@ class ExportController extends Controller
     }
 
 
-    private function validateAndFormatDates($fechas)
+    private function validateAndFormatDates($fromDate, $toDate)
     {
-        if (is_array($fechas) && count($fechas) === 2) {
-            $fecha1 = $fechas[0];
-            $fecha2 = $fechas[1];
+        $fecha1 = $fromDate;
+        $fecha2 = $toDate;
 
-            $carbonFecha1 = Carbon::createFromFormat('Y-m-d', $fecha1);
-            $carbonFecha2 = Carbon::createFromFormat('Y-m-d', $fecha2);
+        $carbonFecha1 = Carbon::createFromFormat('Y-m-d', $fecha1);
+        $carbonFecha2 = Carbon::createFromFormat('Y-m-d', $fecha2);
 
-            if ($carbonFecha1->lessThan($carbonFecha2)) {
-                return [
-                    'fecha1' => $carbonFecha1->format('Y-m-d'),
-                    'fecha2' => $carbonFecha2->format('Y-m-d'),
-                ];
-            }
+        if ($carbonFecha1->lessThan($carbonFecha2)) {
+            return [
+                'fecha1' => $carbonFecha1->format('Y-m-d'),
+                'fecha2' => $carbonFecha2->format('Y-m-d'),
+            ];
         }
         return null;
     }
@@ -133,5 +136,12 @@ class ExportController extends Controller
     public function Low(Request $request)
     {
         return $this->exportReport($request, 4, 'Menos_Vendido');
+    }
+    public function Nada(Request $request)
+    {
+
+        $organization_name = $this->getOrganizationName();
+        return (new sheetscomplete('2023-01-01','2023-12-12', 1))
+        ->download($organization_name . '-' . '2023-01-01 -'.'2023-12-24' . '-' . 'Prueba' . '-Reporte.xlsx');
     }
 }

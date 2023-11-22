@@ -42,8 +42,15 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
         ->join('organizations', 'purchases.organization_id', '=', 'organizations.id')
         ->join('providers', 'purchases.provider_id', '=', 'providers.id')
         ->where('purchases.organization_id', $this->data[0])
-        ->whereBetween('purchases.date', [$this->data[2], $this->data[3]])
-        ->select(
+        ->whereBetween('purchases.date', [$this->data[2], $this->data[3]]);
+        
+
+        if ($this->productName) {
+            $query->where('products.name', $this->productName);
+           
+        }
+
+        return $query->select(
             'purchases.number_bill',
             'products.name as nombre_producto',
             'providers.name as nombre_proveedor',
@@ -53,12 +60,6 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
             'details_purchases.quantity',
             'details_purchases.total',
         );
-
-        if ($this->productName) {
-            $query->where('products.name', $this->productName);
-        }
-    
-        return $query;
     }
 
     public function headings(): array
@@ -86,9 +87,9 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
 
         $title = ($this->productName) ? 'Compras de ' . $this->productName : 'Reporte de Compra';
 
-        $sheet->setCellValue('D1', $this->data[1]);
-        $sheet->setCellValue('D2', $title);
-        $sheet->setCellValue('D3', 'De ' . $fecha1 . ' A ' . $fecha2);
+        $sheet->setCellValue('A1', $this->data[1]);
+        $sheet->setCellValue('A2', $title);
+        $sheet->setCellValue('A3', 'De ' . $fecha1 . ' A ' . $fecha2);
 
         $sheet->getStyle('A:I')->applyFromArray([
             'alignment' => [
@@ -103,7 +104,6 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
        // Obtener el índice de la última columna con contenido
        $highestColumnIndex = $sheet->getHighestDataColumn();
 
-       $sheet->mergeCells('A1:C3');
 
        // Determinar el rango de la tabla basado en el contenido
        $tableStartColumn = 'A'; // Columna inicial de la tabla
@@ -112,17 +112,17 @@ class PurchaseExport implements FromQuery, ShouldAutoSize, WithHeadings, WithSty
        $tableEndRow = $highestRow; // Fila final de la tabla
 
        // Combinar celdas de la fila 1 desde A1 hasta la última columna con contenido
-       $tableStartCell = 'D1';
+       $tableStartCell = 'A1';
        $tableEndCell = $tableEndColumn . '1';
        $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
        // Combinar celdas de la fila 2 desde A2 hasta la última columna con contenido
-       $tableStartCell = 'D2';
+       $tableStartCell = 'A2';
        $tableEndCell = $tableEndColumn . '2';
        $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
         // Combinar celdas de la fila 3 desde A3 hasta la última columna con contenido
-        $tableStartCell = 'D3';
+        $tableStartCell = 'A3';
         $tableEndCell = $tableEndColumn . '3';
         $sheet->mergeCells($tableStartCell . ':' . $tableEndCell);
 
