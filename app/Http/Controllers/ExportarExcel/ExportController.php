@@ -75,7 +75,7 @@ class ExportController extends Controller
         $carbonFecha1 = Carbon::createFromFormat('Y-m-d', $fecha1);
         $carbonFecha2 = Carbon::createFromFormat('Y-m-d', $fecha2);
 
-        if ($carbonFecha1->lessThan($carbonFecha2)) {
+        if ($carbonFecha1->lessThanOrEqualTo($carbonFecha2)) {
             return [
                 'fecha1' => $carbonFecha1->format('Y-m-d'),
                 'fecha2' => $carbonFecha2->format('Y-m-d'),
@@ -94,7 +94,7 @@ class ExportController extends Controller
         $organization_name = $this->getOrganizationName();
         if ($fechasFormateadas) {
             return (new sheetscomplete($fechasFormateadas['fecha1'], $fechasFormateadas['fecha2'], $sheetType))
-                ->download($organization_name . '-' . $fechasFormateadas['fecha1'] . '_' . $fechasFormateadas['fecha2'] . '-' . $sheetTypeName . '-Reporte.xlsx');
+                ->download($organization_name . '-' . $fechasFormateadas['fecha1'] . '_' . $fechasFormateadas['fecha2'] . '-' . $sheetTypeName . '-Reporte.xlsx', \Maatwebsite\Excel\Excel::XLSX);
         }
         return null;
     }
@@ -103,7 +103,7 @@ class ExportController extends Controller
         $organization_name = $this->getOrganizationName();
         if ($fechasFormateadas) {
             return (new sheetscomplete($fechasFormateadas['fecha1'], $fechasFormateadas['fecha2'], $sheetType,$producto))
-                ->download($organization_name . '-' . $fechasFormateadas['fecha1'] . '_' . $fechasFormateadas['fecha2'] . '-' . $sheetTypeName . '-Reporte.xlsx');
+                ->download($organization_name . '-' . $fechasFormateadas['fecha1'] . '_' . $fechasFormateadas['fecha2'] . '-' . $sheetTypeName . '-Reporte.xlsx' , \Maatwebsite\Excel\Excel::XLSX);
         }
         return null;
     }
