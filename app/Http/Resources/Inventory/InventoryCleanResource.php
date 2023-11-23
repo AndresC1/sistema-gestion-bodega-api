@@ -16,7 +16,10 @@ class InventoryCleanResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product' => $this->product->name,
+            'product' => [
+                'id' => $this->product->id,
+                'name' => $this->product->name,
+            ],
             'type' => $this->type,
             'stock' => $this->stock,
             'stock_min' => $this->stock_min,
