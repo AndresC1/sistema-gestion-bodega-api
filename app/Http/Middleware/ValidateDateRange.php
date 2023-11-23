@@ -39,7 +39,7 @@ class ValidateDateRange
 
             // Verificar que las fechas sean válidas
             if ($carbonFromDate !== false && $carbonToDate !== false) {
-                if ($carbonFromDate->lessThan($carbonToDate)) {
+                if ($carbonFromDate->lessThanOrEqualTo($carbonToDate)) {
                     // Verificar que el rango de fechas no sea excesivamente largo (en este caso, no más de 100 años)
                     $diferenciaAnios = $carbonFromDate->diffInYears($carbonToDate);
                     if ($diferenciaAnios <= 100) {
