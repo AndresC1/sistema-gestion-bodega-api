@@ -13,7 +13,35 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        try{
+            $listProducts = Product::OrderBy('name')
+                ->paginate(10);
+            return response()->json([
+                'products' => ProductCleanResource::collection($listProducts),
+                'meta' => [
+                    'total' => $listProducts->total(),
+                    'current_page' => $listProducts->currentPage(),
+                    'per_page' => $listProducts->perPage(),
+                    'last_page' => $listProducts->lastPage(),
+                    'from' => $listProducts->firstItem(),
+                    'to' => $listProducts->lastItem()
+                ],
+                'links' => [
+                    'prev_page_url' => $listProducts->previousPageUrl(),
+                    'next_page_url' => $listProducts->nextPageUrl(),
+                    'last_page_url' => $listProducts->url($listProducts->lastPage()),
+                    'first_page_url' => $listProducts->url(1)
+                ],
+                'mensaje' => 'Productos obtenidos correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener los productos',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**
