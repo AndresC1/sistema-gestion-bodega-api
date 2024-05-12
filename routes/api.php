@@ -143,7 +143,7 @@ Route::prefix('v1')->group(function () {
 
         // Productos
         Route::get('/products/{name}/search', [ProductController::class, "search"]);
-        Route::apiResource('/product', ProductController::class)->only(['store', 'show']);
+        Route::apiResource('/product', ProductController::class)->only(['store', 'show', 'index']);
 
         // Inventarios
         Route::middleware('check_permission:view_inventory')->group(function () {
@@ -198,7 +198,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/earnings_last_year', [EarningsController::class, "calculate_earnings_last_year"]);
             Route::get('/earnings_last_month', [EarningsController::class, "calculate_earnings_for_day"]);
         });
-        
+
         Route::get('/complete/export/Nada', [ExportController::class, 'Nada']);
         Route::prefix('complete/export')->middleware('validate_date_range')->group(function () {
             Route::get('/MP', [ExportController::class, 'InventoryMP']);
