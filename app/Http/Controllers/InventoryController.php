@@ -40,10 +40,10 @@ class InventoryController extends Controller
                     'to' => $inventory->lastItem()
                 ],
                 'links' => [
-                    'prev_page_url' => $inventory->previousPageUrl(),
-                    'next_page_url' => $inventory->nextPageUrl(),
-                    'last_page_url' => $inventory->url($inventory->lastPage()),
-                    'first_page_url' => $inventory->url(1)
+                    'prev_page_url' => $inventory->previousPageUrl() ? $inventory->previousPageUrl()."&type=".$request->type : null,
+                    'next_page_url' => $inventory->nextPageUrl() ? $inventory->nextPageUrl()."&type=".$request->type : null,
+                    'last_page_url' => $inventory->url($inventory->lastPage()) ? $inventory->url($inventory->lastPage())."&type=".$request->type : null,
+                    'first_page_url' => $inventory->url(1) ? $inventory->url(1)."&type=".$request->type : null,
                 ],
                 'mensaje' => 'Inventario de '.$typeInventory.' obtenido correctamente',
                 'estado' => 200
