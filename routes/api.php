@@ -179,6 +179,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:register_sale')->group(function () {
             Route::get('/product_input', [ProductInputController::class, "show"]);
             Route::post('/sale', [SaleController::class, "store"]);
+            Route::get('/sale', [SaleController::class, "index"]);
         });
         Route::get('/list_measurements', [ConverterController::class, "list_units"]);
         Route::get('/list_type_measurements', [ConverterController::class, "list_types_measurements"]);

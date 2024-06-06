@@ -8,6 +8,7 @@ use App\Models\Sale;
 use App\Http\Requests\Sale\StoreSaleRequest;
 use App\Http\Requests\UpdateSaleRequest;
 use Exception;
+use http\Env\Response;
 use Illuminate\Support\Facades\DB;
 use App\Services\SaleService;
 
@@ -18,7 +19,36 @@ class SaleController extends Controller
      */
     public function index()
     {
-        //
+        try{
+            $sales = Sale::where('organization_id', auth()->user()->organization_id)
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+            return response()->json([
+                'sales' => SaleCleanResource::collection($sales),
+                'meta' => [
+                    'total' => $sales->total(),
+                    'currentPage' => $sales->currentPage(),
+                    'perPage' => $sales->perPage(),
+                    'lastPage' => $sales->lastPage(),
+                    'firstItem' => $sales->firstItem(),
+                    'lastItem' => $sales->lastItem(),
+                ],
+                'links' => [
+                    'first' => $sales->url(1),
+                    'last' => $sales->url($sales->lastPage()),
+                    'prev' => $sales->previousPageUrl(),
+                    'next' => $sales->nextPageUrl(),
+                ],
+                'message' => 'Lista de ventas',
+                'estado' => 200
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las ventas',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
     }
 
     /**
@@ -93,5 +123,5 @@ class SaleController extends Controller
     {
         //
     }
-   
+
 }
