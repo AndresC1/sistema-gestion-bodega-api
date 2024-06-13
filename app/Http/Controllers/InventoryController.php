@@ -29,25 +29,40 @@ class InventoryController extends Controller
             $inventory = Inventory::where('type', $request->type)
                 ->where('organization_id', auth()->user()->organization->id)
                 ->paginate(10);
-            return response()->json([
-                'inventario' => InventoryCleanResource::collection($inventory),
-                'meta' => [
+            $filteredInventories = $inventory;
+            $response = [
+                'inventario' => InventoryCleanResource::collection($filteredInventories),
+                'mensaje' => 'Inventario de '.$typeInventory.' obtenido correctamente',
+                'estado' => 200
+            ];
+            if($request->is_available === "true"){
+                $filteredInventories = $inventory->filter(function ($inventory) {
+                    $inventory->productInputs = $inventory->productInputs->filter(function ($productInput) {
+                        return $productInput->disponibility > 0;
+                    });
+                    return $inventory->productInputs->isNotEmpty();
+                });
+                $response['inventario'] = $filteredInventories;
+            }else{
+                $paginate_meta = [
                     'total' => $inventory->total(),
                     'current_page' => $inventory->currentPage(),
                     'per_page' => $inventory->perPage(),
                     'last_page' => $inventory->lastPage(),
                     'from' => $inventory->firstItem(),
                     'to' => $inventory->lastItem()
-                ],
-                'links' => [
+                ];
+                $paginate_links = [
                     'prev_page_url' => $inventory->previousPageUrl() ? $inventory->previousPageUrl()."&type=".$request->type : null,
                     'next_page_url' => $inventory->nextPageUrl() ? $inventory->nextPageUrl()."&type=".$request->type : null,
                     'last_page_url' => $inventory->url($inventory->lastPage()) ? $inventory->url($inventory->lastPage())."&type=".$request->type : null,
                     'first_page_url' => $inventory->url(1) ? $inventory->url(1)."&type=".$request->type : null,
-                ],
-                'mensaje' => 'Inventario de '.$typeInventory.' obtenido correctamente',
-                'estado' => 200
-            ], 200);
+                ];
+                array_push($response, $paginate_meta);
+                array_push($response, $paginate_links);
+            }
+
+            return response()->json($response, 200);
         } catch(Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al obtener el inventario',

@@ -23,6 +23,7 @@ class TypeInventoryRequest extends FormRequest
     {
         return [
             'type' => 'required|string|in:MP,PT',
+            'is_available' => 'in:true,false|nullable',
         ];
     }
 
@@ -37,6 +38,7 @@ class TypeInventoryRequest extends FormRequest
             'type.required' => 'El tipo de inventario es requerido',
             'type.string' => 'El tipo de inventario debe ser una cadena de caracteres',
             'type.in' => 'El tipo de inventario debe ser MP o PT',
+            'is_available.in' => 'El tipo de valor debe ser true o false',
         ];
     }
 }
