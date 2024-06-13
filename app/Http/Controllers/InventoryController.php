@@ -58,8 +58,8 @@ class InventoryController extends Controller
                     'last_page_url' => $inventory->url($inventory->lastPage()) ? $inventory->url($inventory->lastPage())."&type=".$request->type : null,
                     'first_page_url' => $inventory->url(1) ? $inventory->url(1)."&type=".$request->type : null,
                 ];
-                array_push($response, $paginate_meta);
-                array_push($response, $paginate_links);
+                $response["meta"] = $paginate_meta;
+                $response["links"] = $paginate_links;
             }
 
             return response()->json($response, 200);
