@@ -42,7 +42,7 @@ class InventoryController extends Controller
                     });
                     return $inventory->productInputs->isNotEmpty();
                 });
-                $response['inventario'] = $filteredInventories;
+                $response['inventario'] = InventoryCleanResource::collection($filteredInventories);
             }else{
                 $paginate_meta = [
                     'total' => $inventory->total(),
