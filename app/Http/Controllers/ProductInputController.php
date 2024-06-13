@@ -69,7 +69,10 @@ class ProductInputController extends Controller
     public function show(ShowInventoryRequest $request)
     {
         try{
-            $productInputs = Inventory::find($request->inventory_id)->productInputs()->paginate(10);
+            $productInputs = Inventory::find($request->inventory_id)
+                ->productInputs()
+                ->where('disponibility', '>', 0)
+                ->paginate(10);
             return response()->json([
                 'entradas' => EntryProductResource::collection($productInputs),
                 'meta' => [
