@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\MultiplesSheet;
+use App\Http\Requests\Inventory\KardexRequest;
 use App\Http\Requests\Inventory\SearchInventoryRequest;
 use App\Http\Requests\Inventory\TypeInventoryRequest;
 use App\Http\Resources\Inventory\DataMinStockResource;
@@ -13,6 +14,7 @@ use App\Http\Resources\Inventory\InventoryCleanResource;
 use App\Http\Requests\Inventory\StoreInventoryRequest;
 use App\Http\Resources\Inventory\InventoryResource;
 use App\Http\Resources\Inventory\InfoProductResource;
+use App\Http\Resources\Inventory\KardexResource;
 use Exception;
 
 
@@ -242,5 +244,45 @@ class InventoryController extends Controller
                 'estado' => 500
             ], 500);
         }
+    }
+
+    public function kardex(KardexRequest $request){
+        try{
+            $request->validated();
+            switch ($request->type_movement){
+                case "all":
+                    $inventario = Inventory::with(['productInputs' => function ($query) use ($request) {
+                        $query->whereBetween('created_at', [$request->date_start, $request->date_end]);
+                    }])
+                    ->with(['productOutputs' => function ($query) use ($request) {
+                        $query->whereBetween('created_at', [$request->date_start, $request->date_end]);
+                    }])
+                    ->find($request->inventory_id);
+                    break;
+                case "input":
+                    $inventario = Inventory::with(['productInputs' => function ($query) use ($request) {
+                        $query->whereBetween('created_at', [$request->date_start, $request->date_end]);
+                    }])
+                    ->find($request->inventory_id);
+                    break;
+                case "output":
+                    $inventario = Inventory::where('id', $request->inventory_id)->with(['productOutputs' => function ($query) use ($request) {
+                        $query->whereBetween('created_at', [$request->date_start, $request->date_end]);
+                    }])->firstOrFail();
+                    break;
+            }
+            return response()->json([
+                'inventario' => new KardexResource($inventario),
+                'mensaje' => 'Informacion del inventario obtenida correctamente',
+                'estado' => 200
+            ], 200);
+        } catch (Exception $e){
+            return response()->json([
+                'mensaje' => 'Error al obtener informacion del inventario',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+
     }
 }
