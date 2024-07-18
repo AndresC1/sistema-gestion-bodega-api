@@ -16,10 +16,9 @@ use App\Http\Controllers\ProductInputController;
 use App\Http\Controllers\DetailsPurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\Conversion\ConverterController;
-use App\Http\Controllers\ExportSQL\ExportSQLController;
 use App\Http\Controllers\ExportarExcel\ExportController;
 use App\Http\Controllers\Earning\EarningsController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\BackupController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Information\AplicationController;
 
@@ -184,12 +183,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/list_measurements', [ConverterController::class, "list_units"]);
         Route::get('/list_type_measurements', [ConverterController::class, "list_types_measurements"]);
         Route::get('/converter', [ConverterController::class, "converter"]);
-        // Exportar SQL
-        Route::middleware('check_permission:export_database_for_organization')->prefix('/export')->group(function () {
-            Route::get('/sql', [ExportSQLController::class, "exportSQLForOrganizations"]);
-        });
-        Route::middleware('check_permission:export_database_global')->group(function () {
-            Route::get('/export_sql', [ExportSQLController::class, "exportSQLGlobal"]);
+
+        Route::prefix('backup')->middleware('check_permission:export_database_global')->group(function () {
+            Route::post('/export', [BackupController::class, "exportBackup"]);
+            Route::get('/download', [BackupController::class, "downloadBackup"]);
+            Route::get('/list', [BackupController::class, "listBackups"]);
+            Route::delete('/delete', [BackupController::class, "deleteBackup"]);
+            Route::post('/import', [BackupController::class, "restoreBackup"]);
         });
 
         //exportar

@@ -72,4 +72,8 @@ class User extends Authenticatable
     public function productOutput(){
         return $this->hasMany(OutputsProduct::class, 'user_id');
     }
+
+    public function backup(){
+        return $this->hasMany(Backup::class, 'deleted_by');
+    }
 }
