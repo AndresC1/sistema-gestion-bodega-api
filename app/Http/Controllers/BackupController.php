@@ -58,7 +58,9 @@ class BackupController extends Controller
 
     function listBackups()
     {
-        $backups = Backup::Where('deleted_at', null)->get();
+        $backups = Backup::Where('deleted_at', null)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return response()->json([
             'backups' => $backups,

@@ -186,9 +186,9 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('backup')->middleware('check_permission:export_database_global')->group(function () {
             Route::post('/export', [BackupController::class, "exportBackup"]);
-            Route::get('/download', [BackupController::class, "downloadBackup"]);
+            Route::post('/download', [BackupController::class, "downloadBackup"]);
             Route::get('/list', [BackupController::class, "listBackups"]);
-            Route::delete('/delete', [BackupController::class, "deleteBackup"]);
+            Route::post('/delete', [BackupController::class, "deleteBackup"]);
             Route::post('/import', [BackupController::class, "restoreBackup"]);
         });
 
