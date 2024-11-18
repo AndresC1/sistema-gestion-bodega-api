@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexRequest;
 use App\Http\Requests\Organization\StoreOrganizationRequest as StoreOrganizationRequest;
 use App\Http\Requests\Organization\UpdateMyOrganizationRequest;
 use App\Http\Requests\Organization\UpdateOrganizationRequest as UpdateOrganizationRequest;
@@ -22,10 +23,18 @@ class OrganizationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexRequest $request)
     {
         try{
-            $list_organization = Organization::paginate(10);
+            $request->validated();
+            if($request->search){
+                $list_organization = Organization::where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $list_organization = Organization::OrderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 'organizaciones' => OrganizationResource::collection($list_organization),
                 'meta' => [
