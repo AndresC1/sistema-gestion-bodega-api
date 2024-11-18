@@ -187,9 +187,19 @@ class OrganizationController extends Controller
             ], 500);
         }
     }
-    public function users_by_organization(Organization $organization){
+    public function users_by_organization(IndexRequest $request, Organization $organization){
         try{
-            $users_by_organization = User::where('organization_id', $organization->id)->paginate(10);
+            $request->validated();
+            if($request->search){
+                $users_by_organization = User::where('organization_id', $organization->id)
+                    ->where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $users_by_organization = User::where('organization_id', $organization->id)
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 'usuarios' => UserCleanResource::collection($users_by_organization),
                 'meta' => [
