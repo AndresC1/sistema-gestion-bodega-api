@@ -31,6 +31,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('check_permission:add_user')->group(function () {
             Route::post('/auth/register', [AuthController::class, "register"]);
         });
+        Route::post('/check_token', [AuthController::class, "check_token"]);
 
         // Usuarios
             // Informacion de usuario

@@ -86,4 +86,10 @@ class AuthController extends Controller
         $password = substr(str_shuffle($chars), 0, 20);
         return $password;
     }
+
+    public function check_token(){
+        return response()->json([
+            'mensaje' => 'Token valido',
+        ], 200);
+    }
 }
