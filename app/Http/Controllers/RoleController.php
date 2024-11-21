@@ -58,4 +58,26 @@ class RoleController extends Controller
             ], 500);
         }
     }
+
+    public function show(Role $role){
+        try{
+            if($role->name == 'super_admin'){
+                return response()->json([
+                    'mensaje' => 'No se puede obtener el rol super_admin',
+                    'estado' => 400
+                ], 400);
+            }
+            return response()->json([
+                'role' => RoleInfoResource::make($role),
+                'mensaje' => 'Rol obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener el rol',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
 }
