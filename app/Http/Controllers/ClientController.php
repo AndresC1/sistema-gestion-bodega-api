@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexRequest;
 use App\Http\Resources\Client\ClientCleanResource;
 use App\Models\Client;
 use App\Http\Requests\Client\StoreClientRequest;
@@ -15,11 +16,21 @@ class ClientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexRequest $request)
     {
         try{
+            $request->validated();
             $organization_id = Auth::user()->organization->id;
-            $clients = Client::where('organization_id', $organization_id)->paginate(10);
+            if($request->search){
+                $clients = Client::where('organization_id', $organization_id)
+                    ->where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            } else {
+                $clients = Client::where('organization_id', $organization_id)
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 'clients' => ClientCleanResource::collection($clients),
                 'meta' => [
