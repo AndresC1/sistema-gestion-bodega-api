@@ -241,15 +241,24 @@ class OrganizationController extends Controller
             ], 500);
         }
     }
-    public function list_user(){
+    public function list_user(IndexRequest $request){
         try{
+            $request->validated();
             $organization_id = Auth::user()->organization_id;
-            $users = User::where('organization_id', $organization_id)->paginate(10);
-            $usersFilter = $users->filter(function($user){
-                return $user->id != Auth::user()->id;
-            });
+            if($request->search){
+                $users = User::where('organization_id', $organization_id)
+                    ->where('id', '!=', Auth::user()->id)
+                    ->where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $users = User::where('organization_id', $organization_id)
+                    ->where('id', '!=', Auth::user()->id)
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
-                'usuarios' => UserCleanResource::collection($usersFilter),
+                'usuarios' => UserCleanResource::collection($users),
                 'meta' => [
                     'total' => $users->total(),
                     'current_page' => $users->currentPage(),
