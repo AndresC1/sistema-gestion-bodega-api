@@ -22,48 +22,43 @@ class InventoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(TypeInventoryRequest $request)
+    public function index(IndexRequest $indexRequest, TypeInventoryRequest $request)
     {
         try{
             $request->validated();
+            $indexRequest->validated();
             $typeInventory = $request->type === 'MP' ? 'Materia Prima' : 'Producto Terminado';
-            $inventory = Inventory::where('type', $request->type)
-                ->where('organization_id', auth()->user()->organization->id)
-                ->paginate(10);
-            $filteredInventories = $inventory;
-            $response = [
-                'inventario' => InventoryCleanResource::collection($filteredInventories),
-                'mensaje' => 'Inventario de '.$typeInventory.' obtenido correctamente',
-                'estado' => 200
-            ];
-            if($request->is_available === "true"){
-                $filteredInventories = $inventory->filter(function ($inventory) {
-                    $inventory->productInputs = $inventory->productInputs->filter(function ($productInput) {
-                        return $productInput->disponibility > 0;
-                    });
-                    return $inventory->productInputs->isNotEmpty();
-                });
-                $response['inventario'] = InventoryCleanResource::collection($filteredInventories);
+            if($indexRequest->search){
+                $product_search = Product::where('name', 'like', '%'.$indexRequest->search.'%')
+                    ->get();
+                $product_id = $product_search->pluck('id');
+                $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
+                    ->where('type', $request->type)
+                    ->whereIn('product_id', $product_id)
+                    ->orderBy($indexRequest->orderBy??'id', $indexRequest->order??'asc')
+                    ->paginate($indexRequest->limit);
             }else{
-                $paginate_meta = [
+                $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
+                    ->where('type', $request->type)
+                    ->orderBy($indexRequest->orderBy??'id', $indexRequest->order??'asc')
+                    ->paginate($indexRequest->limit);
+            }
+
+            return response()->json([
+                'inventario' => InventoryCleanResource::collection($inventory),
+                'meta' => [
                     'total' => $inventory->total(),
                     'current_page' => $inventory->currentPage(),
                     'per_page' => $inventory->perPage(),
                     'last_page' => $inventory->lastPage(),
-                    'from' => $inventory->firstItem(),
-                    'to' => $inventory->lastItem()
-                ];
-                $paginate_links = [
-                    'prev_page_url' => $inventory->previousPageUrl() ? $inventory->previousPageUrl()."&type=".$request->type : null,
-                    'next_page_url' => $inventory->nextPageUrl() ? $inventory->nextPageUrl()."&type=".$request->type : null,
-                    'last_page_url' => $inventory->url($inventory->lastPage()) ? $inventory->url($inventory->lastPage())."&type=".$request->type : null,
-                    'first_page_url' => $inventory->url(1) ? $inventory->url(1)."&type=".$request->type : null,
-                ];
-                $response["meta"] = $paginate_meta;
-                $response["links"] = $paginate_links;
-            }
-
-            return response()->json($response, 200);
+                ],
+                'links' => [
+                    'first' => $inventory->url(1),
+                    'last' => $inventory->url($inventory->lastPage()),
+                    'prev' => $inventory->previousPageUrl(),
+                    'next' => $inventory->nextPageUrl(),
+                ],
+            ], 200);
         } catch(Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al obtener el inventario',
