@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\MultiplesSheet;
+use App\Http\Requests\IndexRequest;
 use App\Http\Requests\Inventory\SearchInventoryRequest;
 use App\Http\Requests\Inventory\TypeInventoryRequest;
 use App\Http\Resources\Inventory\DataMinStockResource;
@@ -206,13 +207,39 @@ class InventoryController extends Controller
         }
     }
 
-    public function list_product_in_MP(){
+    public function list_product_in_MP(IndexRequest $request){
         try{
-            $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
-                ->where('type', 'MP')
-                ->get();
+            $request->validated();
+            if($request->search){
+                $product_search = Product::where('name', 'like', '%'.$request->search.'%')
+                    ->get();
+                $product_id = $product_search->pluck('id');
+                $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
+                    ->whereIn('product_id', $product_id)
+                    ->where('type', 'MP')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
+                    ->where('type', 'MP')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+
+            }
             return response()->json([
                 'inventario' => InfoProductResource::collection($inventory),
+                'meta' => [
+                    'total' => $inventory->total(),
+                    'current_page' => $inventory->currentPage(),
+                    'per_page' => $inventory->perPage(),
+                    'last_page' => $inventory->lastPage(),
+                ],
+                'links' => [
+                    'first' => $inventory->url(1),
+                    'last' => $inventory->url($inventory->lastPage()),
+                    'prev' => $inventory->previousPageUrl(),
+                    'next' => $inventory->nextPageUrl(),
+                ],
                 'mensaje' => 'Inventario de productos obtenido correctamente',
                 'estado' => 200
             ], 200);
@@ -225,13 +252,38 @@ class InventoryController extends Controller
         }
     }
 
-    public function list_product_in_PT(){
+    public function list_product_in_PT(IndexRequest $request){
         try{
-            $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
-                ->where('type', 'PT')
-                ->get();
+            $request->validated();
+            if($request->search){
+                $product_search = Product::where('name', 'like', '%'.$request->search.'%')
+                    ->get();
+                $product_id = $product_search->pluck('id');
+                $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
+                    ->whereIn('product_id', $product_id)
+                    ->where('type', 'PT')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $inventory = Inventory::where('organization_id', auth()->user()->organization->id)
+                    ->where('type', 'PT')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 'inventario' => InfoProductResource::collection($inventory),
+                'meta' => [
+                    'total' => $inventory->total(),
+                    'current_page' => $inventory->currentPage(),
+                    'per_page' => $inventory->perPage(),
+                    'last_page' => $inventory->lastPage(),
+                ],
+                'links' => [
+                    'first' => $inventory->url(1),
+                    'last' => $inventory->url($inventory->lastPage()),
+                    'prev' => $inventory->previousPageUrl(),
+                    'next' => $inventory->nextPageUrl(),
+                ],
                 'mensaje' => 'Inventario de productos obtenido correctamente',
                 'estado' => 200
             ], 200);
