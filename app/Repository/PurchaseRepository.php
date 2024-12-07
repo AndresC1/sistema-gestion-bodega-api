@@ -13,6 +13,7 @@ class PurchaseRepository
         return Purchase::create([
             'number_bill' => $request->number_bill,
             'provider_id' => $request->provider_id,
+            'note' => $request->note,
             'user_id' => auth()->user()->id,
             'organization_id' => auth()->user()->organization_id,
             'date' => now('America/Managua'),
