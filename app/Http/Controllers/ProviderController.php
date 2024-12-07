@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ProviderExport;
+use App\Http\Requests\IndexRequest;
 use App\Models\Organization;
 use App\Models\Provider;
 use App\Http\Requests\Provider\StoreProviderRequest;
@@ -18,10 +19,20 @@ class ProviderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexRequest $request)
     {
         try {
-            $providers = Provider::where('organization_id', Auth::user()->organization->id)->paginate(10);
+            $request->validated();
+            if($request->search){
+                $providers = Provider::where('organization_id', Auth::user()->organization->id)
+                    ->where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy ?? 'id', $request->order ?? 'asc')
+                    ->paginate($request->limit);
+            } else {
+                $providers = Provider::where('organization_id', Auth::user()->organization->id)
+                    ->orderBy($request->orderBy ?? 'id', $request->order ?? 'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 'proveedores' => ProviderCleanResource::collection($providers),
                 'meta' => [
@@ -29,8 +40,6 @@ class ProviderController extends Controller
                     'current_page' => $providers->currentPage(),
                     'per_page' => $providers->perPage(),
                     'last_page' => $providers->lastPage(),
-                    'from' => $providers->firstItem(),
-                    'to' => $providers->lastItem()
                 ],
                 'links' => [
                     'prev_page_url' => $providers->previousPageUrl(),
@@ -212,5 +221,5 @@ class ProviderController extends Controller
             ], 400);
         }
     }
-   
+
 }

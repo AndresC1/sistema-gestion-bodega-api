@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexRequest;
 use App\Http\Resources\Organization\OrganizationResource;
 use App\Http\Resources\Sector\SectorResource as Sector_SectorResource;
 use App\Models\Organization;
@@ -27,9 +28,19 @@ class SectorController extends Controller
             ], 500);
         }
     }
-    public function organization_for_sector(Sector $sector){
+    public function organization_for_sector(IndexRequest $request, Sector $sector){
         try{
-            $organizations = Organization::where("sector_id", $sector->id)->paginate(10);
+            $request->validated();
+            if($request->search){
+                $organizations = Organization::where("sector_id", $sector->id)
+                    ->where("name", "like", "%".$request->search."%")
+                    ->orderBy($request->orderBy ?? "id", $request->order ?? "asc")
+                    ->paginate($request->limit);
+            }else{
+                $organizations = Organization::where("sector_id", $sector->id)
+                    ->orderBy($request->orderBy ?? "id", $request->order ?? "asc")
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 "organizaciones" => OrganizationResource::collection($organizations),
                 "meta" => [

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexRequest;
 use App\Http\Requests\User\ChangePasswordUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserCleanResource;
@@ -14,9 +15,17 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index(IndexRequest $request){
         try{
-            $users = User::paginate(10);
+            $request->validated();
+            if($request->search){
+                $users = User::where('name', 'like', '%'.$request->search.'%')
+                ->orderBy($request->orderBy??'id', $request->order??'asc')
+                ->paginate($request->limit);
+            }else{
+                $users = User::OrderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             $users_list = $users->filter(function ($user) {
                 return $user->id !== auth()->user()->id;
             });
@@ -122,5 +131,5 @@ class UserController extends Controller
             ], 500);
         }
     }
-   
+
 }

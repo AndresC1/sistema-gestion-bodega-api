@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexRequest;
 use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Resources\Product\ProductCleanResource;
@@ -11,11 +12,18 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexRequest $request)
     {
         try{
-            $listProducts = Product::OrderBy('name')
-                ->paginate(10);
+            $request->validated();
+            if($request->search){
+                $listProducts = Product::Where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $listProducts = Product::OrderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 'products' => ProductCleanResource::collection($listProducts),
                 'meta' => [

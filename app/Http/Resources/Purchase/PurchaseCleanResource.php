@@ -20,6 +20,7 @@ class PurchaseCleanResource extends JsonResource
             'number_bill' => $this->number_bill,
             'provider' => $this->provider->name,
             'user' => $this->user->name,
+            'note' => $this->note,
             'date' => $this->date,
             'total' => $this->total,
             'details' => DetailsPurchaseCleanResource::collection($this->detailsPurchase),

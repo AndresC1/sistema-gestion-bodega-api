@@ -16,6 +16,7 @@ class Purchase extends Model
         'user_id',
         'date',
         'total',
+        'note',
     ];
 
     public function provider()

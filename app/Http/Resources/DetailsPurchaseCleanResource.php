@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Product\ProductCleanResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,7 +18,7 @@ class DetailsPurchaseCleanResource extends JsonResource
         return [
             'id' => $this->id,
             'purchase_id' => $this->purchase_id,
-            'product_id' => $this->product->name,
+            'product' => new ProductCleanResource($this->product),
             'quantity' => $this->quantity,
             'price' => $this->price,
             'total' => $this->total,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\SheetsPurchase;
+use App\Http\Requests\IndexRequest;
 use App\Models\Purchase;
 use Exception;
 use App\Http\Resources\Purchase\PurchaseCleanResource;
@@ -17,12 +18,13 @@ class PurchaseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexRequest $request)
     {
         try {
+            $request->validated();
             $purchases = Purchase::where('organization_id', auth()->user()->organization_id)
-                ->orderBy('created_at', 'desc')
-                ->paginate(10);
+                ->orderBy($request->orderBy??'created_at', $request->order??'desc')
+                ->paginate($request->limit);
             return response()->json([
                 'purchases' => PurchaseCleanResource::collection($purchases),
                 'meta' => [

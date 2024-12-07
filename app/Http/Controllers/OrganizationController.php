@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexRequest;
 use App\Http\Requests\Organization\StoreOrganizationRequest as StoreOrganizationRequest;
 use App\Http\Requests\Organization\UpdateMyOrganizationRequest;
 use App\Http\Requests\Organization\UpdateOrganizationRequest as UpdateOrganizationRequest;
@@ -22,10 +23,18 @@ class OrganizationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexRequest $request)
     {
         try{
-            $list_organization = Organization::paginate(10);
+            $request->validated();
+            if($request->search){
+                $list_organization = Organization::where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $list_organization = Organization::OrderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 'organizaciones' => OrganizationResource::collection($list_organization),
                 'meta' => [
@@ -178,9 +187,19 @@ class OrganizationController extends Controller
             ], 500);
         }
     }
-    public function users_by_organization(Organization $organization){
+    public function users_by_organization(IndexRequest $request, Organization $organization){
         try{
-            $users_by_organization = User::where('organization_id', $organization->id)->paginate(10);
+            $request->validated();
+            if($request->search){
+                $users_by_organization = User::where('organization_id', $organization->id)
+                    ->where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $users_by_organization = User::where('organization_id', $organization->id)
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
                 'usuarios' => UserCleanResource::collection($users_by_organization),
                 'meta' => [
@@ -222,15 +241,24 @@ class OrganizationController extends Controller
             ], 500);
         }
     }
-    public function list_user(){
+    public function list_user(IndexRequest $request){
         try{
+            $request->validated();
             $organization_id = Auth::user()->organization_id;
-            $users = User::where('organization_id', $organization_id)->paginate(10);
-            $usersFilter = $users->filter(function($user){
-                return $user->id != Auth::user()->id;
-            });
+            if($request->search){
+                $users = User::where('organization_id', $organization_id)
+                    ->where('id', '!=', Auth::user()->id)
+                    ->where('name', 'like', '%'.$request->search.'%')
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }else{
+                $users = User::where('organization_id', $organization_id)
+                    ->where('id', '!=', Auth::user()->id)
+                    ->orderBy($request->orderBy??'id', $request->order??'asc')
+                    ->paginate($request->limit);
+            }
             return response()->json([
-                'usuarios' => UserCleanResource::collection($usersFilter),
+                'usuarios' => UserCleanResource::collection($users),
                 'meta' => [
                     'total' => $users->total(),
                     'current_page' => $users->currentPage(),

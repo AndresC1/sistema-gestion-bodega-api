@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexRequest;
 use App\Http\Resources\Role\RoleInfoResource;
+use App\Http\Resources\Role\RoleResource;
 use App\Http\Resources\User\UserInfoResource;
 use App\Models\Role;
 use App\Models\User;
@@ -11,12 +13,22 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(IndexRequest $request)
     {
-        $listaRoles = Role::where('name', '!=', 'super_admin')->get();
         try{
+            $request->validated();
+            if($request->search){
+                $roles = Role::where("name", "like", "%".$request->search."%")
+                    ->where('name', '!=', 'super_admin')
+                    ->orderBy($request->orderBy ?? "id", $request->order ?? "asc")
+                    ->paginate($request->limit);
+            }else{
+                $roles = Role::orderBy($request->orderBy ?? "id", $request->order ?? "asc")
+                    ->where('name', '!=', 'super_admin')
+                    ->paginate($request->limit);
+            }
             return response()->json([
-                'roles' => RoleInfoResource::collection($listaRoles),
+                'roles' => RoleResource::collection($roles),
                 'mensaje' => 'Roles obtenidos correctamente',
                 'estado' => 200
             ], 200);
@@ -41,6 +53,28 @@ class RoleController extends Controller
         } catch(Exception $e) {
             return response()->json([
                 'mensaje' => 'Error al cambiar el rol del usuario',
+                'error' => $e->getMessage(),
+                'estado' => 500
+            ], 500);
+        }
+    }
+
+    public function show(Role $role){
+        try{
+            if($role->name == 'super_admin'){
+                return response()->json([
+                    'mensaje' => 'No se puede obtener el rol super_admin',
+                    'estado' => 400
+                ], 400);
+            }
+            return response()->json([
+                'role' => RoleInfoResource::make($role),
+                'mensaje' => 'Rol obtenido correctamente',
+                'estado' => 200
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al obtener el rol',
                 'error' => $e->getMessage(),
                 'estado' => 500
             ], 500);
