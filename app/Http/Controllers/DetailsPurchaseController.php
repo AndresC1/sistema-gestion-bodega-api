@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\PurchaseExport;
 use App\Exports\SheetsPurchase;
+use App\Http\Requests\IndexRequest;
 use App\Models\DetailsPurchase;
 use App\Http\Requests\DetailsPurchase\ListDetailsPurchaseRequest;
 use App\Http\Resources\DetailsPurchaseCleanResource;
@@ -14,12 +15,14 @@ class DetailsPurchaseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ListDetailsPurchaseRequest $request)
+    public function index(IndexRequest $indexRequest, ListDetailsPurchaseRequest $request)
     {
         try {
+            $indexRequest->validated();
             $detailsPurchases = DetailsPurchase::where('product_id', $request->product_id)
                 ->where('organization_id', auth()->user()->organization->id)
-                ->paginate(10);
+                ->orderBy($indexRequest->order_by ?? 'created_at', $indexRequest->order ?? 'desc')
+                ->paginate($indexRequest->limit);
             return response()->json([
                 'detalles_de_compra' => DetailsPurchaseCleanResource::collection($detailsPurchases),
                 'meta' => [
@@ -95,5 +98,5 @@ class DetailsPurchaseController extends Controller
         //
     }
 
-   
+
 }
